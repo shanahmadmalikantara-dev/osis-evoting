@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { clearAccountFailures, isLoginBlocked, rateLimitKeys, recordLoginFailure } from "@/lib/login-rate-limit";
 import { HOME_FOR_ROLE, roleFromClaims, type AppRole } from "@/lib/roles";
 import { getServerClient } from "@/lib/supabase/server";
+import { getServiceClient } from "@/lib/supabase/service";
 
 export type LoginState = { error: string | null };
 
@@ -57,11 +58,18 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   }
 
   await clearAccountFailures(keys);
+  await getServiceClient()
+    .from("audit_logs")
+    .insert({ aktor: email, aksi: role === "admin" ? "Login admin" : "Login bilik" });
   redirect(HOME_FOR_ROLE[role]);
 }
 
 export async function logout(): Promise<void> {
   const supabase = await getServerClient();
+  const { data } = await supabase.auth.getClaims();
+  if (data?.claims?.email) {
+    await getServiceClient().from("audit_logs").insert({ aktor: String(data.claims.email), aksi: "Logout" });
+  }
   await supabase.auth.signOut();
   redirect("/");
 }

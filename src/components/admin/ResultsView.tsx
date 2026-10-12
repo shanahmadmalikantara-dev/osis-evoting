@@ -1,9 +1,5 @@
+import { percent } from "@/lib/format";
 import type { Results } from "@/lib/types";
-
-export function percent(votes: number, total: number): string {
-  if (total === 0) return "0,0%";
-  return `${((votes / total) * 100).toLocaleString("id-ID", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
-}
 
 // Live numbers: hero total, one horizontal bar per candidate (single hue: the bar length is
 // the only thing that differs, the name carries identity), and votes per booth.

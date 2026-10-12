@@ -31,7 +31,7 @@ export function Modal({
         event.preventDefault();
         onClose();
       }}
-      className="m-auto w-[min(92vw,520px)] rounded-modal border-2 border-ink bg-surface p-0 text-ink shadow-card backdrop:bg-ink/60"
+      className="m-auto max-h-[92vh] w-[min(92vw,520px)] overflow-y-auto rounded-modal border-2 border-ink bg-surface p-0 text-ink shadow-card backdrop:bg-ink/60"
     >
       {open ? <div className="p-6 sm:p-8">{children}</div> : null}
     </dialog>

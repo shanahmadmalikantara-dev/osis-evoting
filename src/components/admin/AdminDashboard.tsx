@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { runLifecycle, type LifecycleAction } from "@/app/admin/(panel)/actions";
 import { ResultsView } from "@/components/admin/ResultsView";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonClasses } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Notice } from "@/components/ui/Notice";
 import { Sticker, type StickerColor } from "@/components/ui/Sticker";
@@ -160,6 +160,19 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
       ) : null}
 
       <ResultsView results={results} />
+
+      <section className="flex flex-wrap items-center gap-3 rounded-card border-2 border-ink bg-surface p-5 shadow-card">
+        <span className="mr-2 font-display text-2xl">EKSPOR HASIL</span>
+        <a href="/admin/export/csv" download className={buttonClasses("secondary", "md")}>
+          ↓ CSV (Excel)
+        </a>
+        <a href="/admin/export/pdf" download className={buttonClasses("secondary", "md")}>
+          ↓ PDF
+        </a>
+        <span className="text-sm text-ink-soft">
+          {results.status === "closed" ? "Hasil akhir." : "Sebelum voting ditutup, file ditandai SEMENTARA."}
+        </span>
+      </section>
 
       <Modal open={confirming !== null} onClose={() => !busy && setConfirming(null)} labelledBy="lifecycle-title">
         {confirming ? (

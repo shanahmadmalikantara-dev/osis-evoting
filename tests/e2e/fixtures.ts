@@ -67,3 +67,14 @@ export async function countVotes(): Promise<{ total: number; byNumber: Record<nu
     return { total: rows.reduce((sum, r) => sum + Number(r.n), 0), byNumber };
   });
 }
+
+// TEST ONLY: restores the four seed candidates (election must be in draft, votes empty).
+export async function resetCandidates() {
+  assertLocal();
+  const { readFile } = await import("node:fs/promises");
+  const seed = await readFile("supabase/seed.sql", "utf8");
+  await withDb(async (db) => {
+    await db.query("delete from public.candidates");
+    await db.query(seed);
+  });
+}
