@@ -24,7 +24,8 @@ export function databaseUrlFromEnv(): string {
   const match = raw.match(/^(postgres(?:ql)?:\/\/)([^:/@]+):(.*)@([^@]+)$/);
   if (!match) {
     fail(
-      "DATABASE_URL bentuknya tidak dikenali. Harus seperti: postgresql://postgres.xxxx:PASSWORD@aws-...pooler.supabase.com:5432/postgres",
+      "DATABASE_URL bentuknya tidak dikenali atau terpotong. Kalau password ada tanda #, apit nilainya dengan tanda kutip: " +
+        'DATABASE_URL="postgresql://postgres.xxxx:PASSWORD@aws-...pooler.supabase.com:5432/postgres"',
     );
   }
   const [, scheme, user, password, rest] = match;
