@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Foto contoh paslon 2">
+  <rect width="400" height="500" fill="#7FD6B0"/>
+  <g fill="#1B1B1B" opacity="0.9">
+    <circle cx="140" cy="200" r="55"/>
+    <path d="M50 420c0-70 40-130 90-130s90 60 90 130z"/>
+    <circle cx="265" cy="215" r="48"/>
+    <path d="M185 420c0-62 36-115 80-115s80 53 80 115z"/>
+  </g>
+  <text x="200" y="480" text-anchor="middle" font-family="monospace" font-size="28" font-weight="700" fill="#1B1B1B">PASLON 2</text>
+</svg>
