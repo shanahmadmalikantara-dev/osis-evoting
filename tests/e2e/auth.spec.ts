@@ -1,15 +1,6 @@
-import { expect, test, type Page } from "@playwright/test";
-import { E2E_USERS, PASSWORD } from "./fixtures";
-
-// Next.js adds its own empty role="alert" route announcer; skip it.
-const alert = (page: Page) => page.locator('[role="alert"]:not(#__next-route-announcer__)');
-
-async function login(page: Page, path: "/admin/login" | "/bilik/login", username: string, password = PASSWORD) {
-  await page.goto(path);
-  await page.getByLabel("Nama akun").fill(username);
-  await page.getByLabel("Kata sandi").fill(password);
-  await page.getByRole("button", { name: /masuk/i }).click();
-}
+import { expect, test } from "@playwright/test";
+import { E2E_USERS } from "./fixtures";
+import { alertBox as alert, login } from "./helpers";
 
 test("home shows the two entry buttons", async ({ page }) => {
   await page.goto("/");

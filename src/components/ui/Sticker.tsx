@@ -22,7 +22,7 @@ export function Sticker({
 }) {
   return (
     <span
-      className={`inline-block rounded-sticker px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest shadow-sticker ${COLORS[color]}`}
+      className={`inline-block w-fit rounded-sticker px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest shadow-sticker ${COLORS[color]}`}
       style={{ transform: `rotate(${rotate}deg)` }}
     >
       {children}
