@@ -12,7 +12,9 @@
     "check": "npm run typecheck && npm run lint && npm test",
     "setup": "tsx --env-file=.env.local scripts/setup.ts",
     "create-users": "tsx --env-file=.env.local scripts/create-users.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:security": "tsx --env-file=.env.local scripts/security-check.ts",
+    "reset-password": "tsx --env-file=.env.local scripts/reset-password.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
