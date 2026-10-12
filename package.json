@@ -11,16 +11,19 @@
     "test": "vitest run",
     "check": "npm run typecheck && npm run lint && npm test",
     "setup": "tsx --env-file=.env.local scripts/setup.ts",
-    "create-users": "tsx --env-file=.env.local scripts/create-users.ts"
+    "create-users": "tsx --env-file=.env.local scripts/create-users.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^22.20.5",
     "@types/pg": "^8.23.1",

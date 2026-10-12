@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
+/*
+ * DESIGN TOKENS — the single place to restyle the app.
+ * Tailwind v4 turns each token into a CSS variable on :root AND a utility class
+ * (e.g. --color-yellow -> bg-yellow, text-yellow; --radius-card -> rounded-card).
+ * Style follows the design/ reference: ruled notebook paper, sticker colors,
+ * pixel display font, handwritten accents, thick black outlines.
+ */
+@theme {
+  /* Colors */
+  --color-paper: #f4f3ee;
+  --color-paper-line: #e2e0d8;
+  --color-frame: #8e8e8e;
+  --color-ink: #1b1b1b;
+  --color-ink-soft: #55534e;
+  --color-surface: #ffffff;
+  --color-surface-dark: #1f1c1a;
+  --color-on-dark: #f4f3ee;
+
+  --color-yellow: #f5c542;
+  --color-mint: #a8e6cf;
+  --color-green: #22b35e;
+  --color-pink: #ff4fa3;
+  --color-blue: #2f4ff0;
+  --color-red: #e8603c;
+
+  --color-success: #1f9d55;
+  --color-danger: #d93a2b;
+  --color-focus: #2f4ff0;
+
+  /* Fonts (loaded in layout.tsx via next/font) */
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-pixel), ui-monospace, monospace;
+  --font-hand: var(--font-handwriting), cursive;
+  --font-mono: var(--font-label), ui-monospace, monospace;
+
+  /* Radii */
+  --radius-sticker: 4px;
+  --radius-card: 10px;
+  --radius-modal: 14px;
+
+  /* Shadows */
+  --shadow-sticker: 0 2px 0 rgb(27 27 27 / 0.18);
+  --shadow-card: 4px 4px 0 #1b1b1b;
+  --shadow-card-hover: 7px 7px 0 #1b1b1b;
+
+  /* Layout */
+  --spacing-gutter: 16px;
+  --spacing-section: 48px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper-line-gap: 28px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-frame);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--paper-line-gap) - 1px),
+    var(--color-paper-line) calc(var(--paper-line-gap) - 1px),
+    var(--color-paper-line) var(--paper-line-gap)
+  );
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
