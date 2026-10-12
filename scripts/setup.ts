@@ -4,11 +4,11 @@
 // Usage: npm run setup
 import { Client } from "pg";
 import { createUsers } from "./create-users";
-import { requireEnv } from "./lib/env";
+import { databaseUrlFromEnv } from "./lib/env";
 import { applyMigrations, applySeed } from "./lib/migrate";
 
 async function main() {
-  const connectionString = requireEnv("DATABASE_URL");
+  const connectionString = databaseUrlFromEnv();
   const isLocal = /localhost|127\.0\.0\.1|host=\//.test(connectionString);
   const client = new Client({
     connectionString,

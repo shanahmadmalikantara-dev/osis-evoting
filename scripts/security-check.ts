@@ -9,9 +9,9 @@ import { randomUUID } from "node:crypto";
 import { createServerClient } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { generatePassword } from "./create-users";
-import { requireEnv } from "./lib/env";
+import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 
-const SUPABASE_URL = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
+const SUPABASE_URL = supabaseUrlFromEnv();
 const ANON_KEY = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 const SERVICE_KEY = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
 const APP_URL = (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");

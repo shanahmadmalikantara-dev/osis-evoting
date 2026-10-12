@@ -7,3 +7,41 @@ export function requireEnv(name: string): string {
   }
   return value;
 }
+
+function fail(message: string): never {
+  console.error(`\n✗ ${message}\n`);
+  process.exit(1);
+}
+
+// Checks DATABASE_URL and fixes the most common mistake: a password with symbols (@ # / ? : %)
+// that is not URL-encoded. Returns a connection string that `pg` can parse.
+export function databaseUrlFromEnv(): string {
+  const raw = requireEnv("DATABASE_URL");
+  if (/\s/.test(raw)) fail("DATABASE_URL berisi spasi atau terpotong jadi dua baris. Tulis dalam satu baris tanpa spasi.");
+  if (raw.includes("[") || raw.includes("]")) {
+    fail("DATABASE_URL masih berisi tanda [ ]. Ganti [YOUR-PASSWORD] dengan password database, kurung sikunya ikut dihapus.");
+  }
+  const match = raw.match(/^(postgres(?:ql)?:\/\/)([^:/@]+):(.*)@([^@]+)$/);
+  if (!match) {
+    fail(
+      "DATABASE_URL bentuknya tidak dikenali. Harus seperti: postgresql://postgres.xxxx:PASSWORD@aws-...pooler.supabase.com:5432/postgres",
+    );
+  }
+  const [, scheme, user, password, rest] = match;
+  const alreadyEncoded = /%[0-9A-Fa-f]{2}/.test(password) && !/[@#/?:]/.test(password);
+  const url = `${scheme}${user}:${alreadyEncoded ? password : encodeURIComponent(password)}@${rest}`;
+  try {
+    new URL(url);
+  } catch {
+    fail("DATABASE_URL tidak valid. Coba reset password database (huruf + angka saja) lalu salin ulang connection string-nya.");
+  }
+  return url;
+}
+
+export function supabaseUrlFromEnv(): string {
+  const raw = requireEnv("NEXT_PUBLIC_SUPABASE_URL").replace(/\/+$/, "");
+  if (!/^https?:\/\/[^\s/]+$/.test(raw)) {
+    fail("NEXT_PUBLIC_SUPABASE_URL tidak valid. Harus seperti: https://xxxx.supabase.co (tanpa /rest/v1 di belakang).");
+  }
+  return raw;
+}

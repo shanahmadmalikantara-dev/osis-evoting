@@ -2,7 +2,7 @@
 // Usage: npm run reset-password -- bilik3
 import { createClient } from "@supabase/supabase-js";
 import { generatePassword } from "./create-users";
-import { requireEnv } from "./lib/env";
+import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 
 async function main() {
   const name = process.argv[2]?.trim().toLowerCase();
@@ -13,7 +13,7 @@ async function main() {
   const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-osis.local";
   const email = name.includes("@") ? name : `${name}@${domain}`;
 
-  const supabase = createClient(requireEnv("NEXT_PUBLIC_SUPABASE_URL"), requireEnv("SUPABASE_SERVICE_ROLE_KEY"), {
+  const supabase = createClient(supabaseUrlFromEnv(), requireEnv("SUPABASE_SERVICE_ROLE_KEY"), {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const { data, error } = await supabase.auth.admin.listUsers({ perPage: 1000 });

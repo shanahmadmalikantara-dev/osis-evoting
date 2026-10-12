@@ -5,7 +5,7 @@
 import { randomInt } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { createClient } from "@supabase/supabase-js";
-import { requireEnv } from "./lib/env";
+import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 
 const ACCOUNTS = [
   ...[1, 2, 3].map((n) => ({ name: `admin${n}`, role: "admin" as const })),
@@ -23,7 +23,7 @@ export function generatePassword(length = 20): string {
 
 export async function createUsers(): Promise<void> {
   const supabase = createClient(
-    requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    supabaseUrlFromEnv(),
     requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
