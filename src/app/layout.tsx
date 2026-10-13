@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Gochi_Hand, Inter, Pixelify_Sans, Space_Mono } from "next/font/google";
+import { Caveat, Courier_Prime, Lora, Playfair_Display, Special_Elite } from "next/font/google";
 import "./globals.css";
 
-const body = Inter({ variable: "--font-body", subsets: ["latin"] });
-const pixel = Pixelify_Sans({ variable: "--font-pixel", subsets: ["latin"], weight: ["700"] });
-const handwriting = Gochi_Hand({ variable: "--font-handwriting", subsets: ["latin"], weight: "400" });
-const label = Space_Mono({ variable: "--font-label", subsets: ["latin"], weight: ["400", "700"] });
+// Detective theme: newspaper headlines, typewriter labels, handwritten notes, book serif body.
+const body = Lora({ variable: "--font-body", subsets: ["latin"] });
+const headline = Playfair_Display({ variable: "--font-headline", subsets: ["latin"], weight: ["700", "900"] });
+const handwriting = Caveat({ variable: "--font-handwriting", subsets: ["latin"], weight: ["500", "700"] });
+const label = Courier_Prime({ variable: "--font-label", subsets: ["latin"], weight: ["400", "700"] });
+const typewriter = Special_Elite({ variable: "--font-typewriter", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Pemilu OSIS MAN 4 Jakarta",
@@ -14,14 +16,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f3ee",
+  themeColor: "#2b1d12",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="id"
-      className={`${body.variable} ${pixel.variable} ${handwriting.variable} ${label.variable} h-full antialiased`}
+      className={`${body.variable} ${headline.variable} ${handwriting.variable} ${label.variable} ${typewriter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

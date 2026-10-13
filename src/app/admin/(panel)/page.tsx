@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/ui/PageHeading";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { getServerClient } from "@/lib/supabase/server";
 import type { Results } from "@/lib/types";
@@ -11,10 +12,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <header className="flex animate-fade flex-col gap-1">
-        <p className="font-hand text-xl">pemilihan ketua &amp; wakil ketua osis</p>
-        <h1 className="font-display text-5xl [text-shadow:4px_4px_0_var(--color-yellow)] sm:text-6xl">DASHBOARD</h1>
-      </header>
+      <PageHeading kicker="Pemilihan ketua & wakil ketua OSIS" title="DASHBOARD" />
       <AdminDashboard initialResults={data as Results} />
     </>
   );

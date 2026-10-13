@@ -4,9 +4,9 @@ type Variant = "primary" | "secondary" | "danger" | "ghost";
 type Size = "md" | "lg" | "xl";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-ink text-on-dark border-ink hover:bg-surface-dark",
-  secondary: "bg-surface text-ink border-ink hover:bg-yellow",
-  danger: "bg-danger text-white border-ink hover:brightness-95",
+  primary: "bg-surface-dark text-on-dark border-ink hover:bg-pink",
+  secondary: "bg-surface text-ink border-ink hover:bg-manila",
+  danger: "bg-danger text-white border-ink hover:brightness-110",
   ghost: "bg-transparent text-ink border-transparent hover:border-ink",
 };
 
@@ -26,7 +26,7 @@ export function buttonClasses(variant: Variant = "primary", size: Size = "lg", e
   return [
     "inline-flex items-center justify-center gap-3 border-2 font-mono font-bold uppercase tracking-widest",
     "rounded-sticker shadow-sticker transition-[background-color,color,transform,box-shadow] duration-200",
-    "hover:-translate-y-0.5 hover:shadow-[3px_4px_0_var(--color-ink)] active:translate-y-px active:shadow-none",
+    "hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-px active:shadow-none",
     "disabled:hover:translate-y-0 disabled:hover:shadow-sticker",
     "disabled:cursor-not-allowed disabled:opacity-50",
     VARIANTS[variant],
@@ -38,7 +38,7 @@ export function buttonClasses(variant: Variant = "primary", size: Size = "lg", e
 export function Button({ variant = "primary", size = "lg", icon, className = "", children, ...props }: ButtonProps) {
   return (
     <button className={buttonClasses(variant, size, className)} {...props}>
-      {icon ? <span className="grid size-6 place-items-center bg-blue text-white">{icon}</span> : null}
+      {icon ? <span className="grid size-6 place-items-center rounded-full bg-pink text-white">{icon}</span> : null}
       {children}
     </button>
   );

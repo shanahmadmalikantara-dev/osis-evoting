@@ -91,6 +91,7 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | Foto diunggah langsung dari browser admin ke Storage, lalu server action menyimpan URL-nya (hanya URL bucket sendiri atau `/dummy/` yang diterima). | Menghindari batas ukuran body server action/Vercel. Policy Storage tetap membatasi ke admin saat draft. |
 | CSV memakai pemisah `;` dan BOM UTF-8. | Excel dengan pengaturan wilayah Indonesia membaca kolomnya dengan benar. |
 | PDF dibuat dengan `pdf-lib` dan font standar. | Ringan dan jalan di server Vercel tanpa browser. Karakter di luar Latin diganti `?` supaya ekspor tidak pernah gagal. |
+| Tampilan bertema papan bukti detektif (Sherlock Holmes): papan gabus, polaroid, benang merah, map berkas, cap karet. Semua warna dan font ada di `src/app/globals.css`, efek hover di kelas `fx-*`. | Permintaan Ahmad (13 Okt 2026) dengan gambar referensi. Fitur dan alur tidak berubah. |
 | Login dan logout admin/bilik juga dicatat di audit log. | Membantu menelusuri kejadian di hari-H. Catatan ini tidak terhubung ke suara. |
 | `npm run test:security` membuat akun uji sementara dan berjalan di dalam Mode Uji Coba. | Aman dijalankan ke proyek asli sebelum hari-H, tanpa meninggalkan data. Uji "voting saat closed" hanya ada di tes database karena menutup voting itu final. |
 | Pendaftaran akun publik dimatikan (config lokal + langkah manual di dashboard Supabase). | Spesifikasi: tidak ada halaman daftar. Akun tanpa role pun tidak punya akses, tapi lebih aman ditutup. |

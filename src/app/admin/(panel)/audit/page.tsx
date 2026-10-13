@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/ui/PageHeading";
 import { formatDateTime } from "@/lib/format";
 import { getServerClient } from "@/lib/supabase/server";
 
@@ -16,13 +17,10 @@ export default async function AuditPage() {
 
   return (
     <>
-      <header className="flex flex-col gap-1">
-        <p className="font-hand text-lg">catatan semua aksi admin, tidak bisa diubah atau dihapus</p>
-        <h1 className="font-display text-4xl sm:text-5xl">AUDIT LOG</h1>
-      </header>
-      <div className="overflow-x-auto rounded-card border-2 border-ink bg-surface shadow-card">
+      <PageHeading kicker="Catatan semua aksi admin, tidak bisa diubah atau dihapus" title="AUDIT LOG" />
+      <div className="paper-ruled relative animate-rise overflow-x-auto pl-8">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="border-b-2 border-ink bg-yellow font-mono text-xs uppercase tracking-widest">
+          <thead className="border-b-2 border-ink font-type text-xs uppercase tracking-widest text-pink">
             <tr>
               <th className="px-4 py-3">Waktu</th>
               <th className="px-4 py-3">Aktor</th>
@@ -38,7 +36,7 @@ export default async function AuditPage() {
               </tr>
             ) : (
               data.map((row) => (
-                <tr key={row.id} className="border-b border-paper-line last:border-0">
+                <tr key={row.id} className="border-b border-paper-line font-type transition-colors last:border-0 hover:bg-manila/50">
                   <td className="whitespace-nowrap px-4 py-2 font-mono text-xs tabular-nums">{formatDateTime(row.waktu)}</td>
                   <td className="px-4 py-2 font-mono text-xs">{row.aktor}</td>
                   <td className="px-4 py-2">{row.aksi}</td>
@@ -48,7 +46,7 @@ export default async function AuditPage() {
           </tbody>
         </table>
       </div>
-      {data.length === LIMIT ? <p className="text-sm text-ink-soft">Menampilkan {LIMIT} catatan terbaru.</p> : null}
+      {data.length === LIMIT ? <p className="font-type text-sm text-on-dark">Menampilkan {LIMIT} catatan terbaru.</p> : null}
     </>
   );
 }

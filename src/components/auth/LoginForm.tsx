@@ -23,7 +23,7 @@ export function LoginForm({ role, usernameHint }: { role: AppRole; usernameHint:
           spellCheck={false}
           required
           placeholder={usernameHint}
-          className="rounded-sticker border-2 border-ink bg-surface px-4 py-3 text-base shadow-sticker transition-[box-shadow,transform] duration-200 hover:-translate-y-px focus:shadow-[4px_4px_0_var(--color-yellow)] focus:outline-none"
+          className="paper rounded-sticker border-b-2 border-ink px-4 py-3 font-type text-lg shadow-sticker transition-[box-shadow,transform] duration-200 hover:-translate-y-px focus:shadow-[0_0_0_3px_var(--color-pink)] focus:outline-none"
         />
       </label>
       <label className="flex flex-col gap-2">
@@ -33,7 +33,7 @@ export function LoginForm({ role, usernameHint }: { role: AppRole; usernameHint:
           type="password"
           autoComplete="current-password"
           required
-          className="rounded-sticker border-2 border-ink bg-surface px-4 py-3 text-base shadow-sticker transition-[box-shadow,transform] duration-200 hover:-translate-y-px focus:shadow-[4px_4px_0_var(--color-yellow)] focus:outline-none"
+          className="paper rounded-sticker border-b-2 border-ink px-4 py-3 font-type text-lg shadow-sticker transition-[box-shadow,transform] duration-200 hover:-translate-y-px focus:shadow-[0_0_0_3px_var(--color-pink)] focus:outline-none"
         />
       </label>
       {state.error ? <Notice tone="error">{state.error}</Notice> : null}

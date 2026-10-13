@@ -10,17 +10,19 @@ const LINKS = [
   { href: "/admin/audit", label: "Audit log", icon: "◆" },
 ];
 
-// Top bar: brand on the left, pill links (yellow when active), account + logout on the right.
+// Top bar styled as the tabs of a case-file cabinet; the active tab sits in front.
 export function AdminNav({ email }: { email: string }) {
   const pathname = usePathname();
   return (
-    <nav className="flex animate-fade flex-wrap items-center justify-between gap-3 rounded-card border-[3px] border-ink bg-surface px-3 py-2 shadow-card">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-2 hidden items-center gap-2 border-r-2 border-paper-line pr-4 sm:flex">
-          <span className="grid size-8 place-items-center rounded-sticker border-2 border-ink bg-yellow font-display text-sm">
+    <nav className="flex animate-fade flex-wrap items-end justify-between gap-3 border-b-4 border-manila">
+      <div className="flex flex-wrap items-end gap-1">
+        <span className="mb-2 mr-4 hidden items-center gap-2 sm:flex">
+          <span className="grid size-9 place-items-center rounded-full bg-surface-dark font-display text-sm font-black text-on-dark shadow-card">
             OS
           </span>
-          <span className="font-display text-lg leading-none">PEMILU OSIS</span>
+          <span className="font-display text-2xl font-black leading-none text-on-dark [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
+            Pemilu OSIS
+          </span>
         </span>
         {LINKS.map((link) => {
           const active = pathname === link.href;
@@ -29,11 +31,11 @@ export function AdminNav({ email }: { email: string }) {
               key={link.href}
               href={link.href}
               aria-current={active ? "page" : undefined}
-              className={`group flex items-center gap-2 rounded-full border-2 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 ${
-                active ? "border-ink bg-yellow shadow-sticker" : "border-transparent hover:border-ink hover:bg-paper"
+              className={`group flex items-center gap-2 rounded-t-[6px] px-5 font-type text-sm uppercase tracking-widest transition-[padding,background-color,transform] duration-200 ${
+                active ? "manila py-3 shadow-none" : "bg-paper/80 py-2 hover:-translate-y-1 hover:bg-manila/90"
               }`}
             >
-              <span aria-hidden className="transition-transform duration-300 group-hover:rotate-[20deg] group-hover:scale-125">
+              <span aria-hidden className="text-pink transition-transform duration-300 group-hover:rotate-[20deg] group-hover:scale-125">
                 {link.icon}
               </span>
               {link.label}
@@ -41,15 +43,15 @@ export function AdminNav({ email }: { email: string }) {
           );
         })}
       </div>
-      <div className="flex items-center gap-3">
-        <span className="hidden items-center gap-2 rounded-full bg-paper px-3 py-1 font-mono text-xs text-ink-soft sm:flex">
-          <span aria-hidden className="size-2 rounded-full bg-green" />
+      <div className="mb-2 flex items-center gap-3">
+        <span className="hidden items-center gap-2 rounded-full bg-surface-dark/80 px-3 py-1 font-mono text-xs text-on-dark sm:flex">
+          <span aria-hidden className="size-2 rounded-full bg-[#7fd39a]" />
           {email}
         </span>
         <form action={logout}>
           <button
             type="submit"
-            className="rounded-full border-2 border-ink px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest transition-[background-color,color,transform] duration-200 hover:-translate-y-0.5 hover:bg-pink hover:text-white"
+            className="paper rounded-sticker px-4 py-1.5 font-type text-xs uppercase tracking-widest transition-[background-color,color,transform] duration-200 hover:-translate-y-0.5 hover:bg-pink hover:text-white"
           >
             Keluar
           </button>

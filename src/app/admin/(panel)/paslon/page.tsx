@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/ui/PageHeading";
 import { CandidateManager } from "@/components/admin/CandidateManager";
 import { getServerClient } from "@/lib/supabase/server";
 import type { Candidate, ElectionStatus } from "@/lib/types";
@@ -14,10 +15,7 @@ export default async function CandidatesPage() {
 
   return (
     <>
-      <header className="flex flex-col gap-1">
-        <p className="font-hand text-lg">nama, foto, dan visi-misi</p>
-        <h1 className="font-display text-4xl sm:text-5xl">KELOLA PASLON</h1>
-      </header>
+      <PageHeading kicker="Nama, foto, dan visi-misi" title="KELOLA PASLON" />
       <CandidateManager
         candidates={candidates.data as Candidate[]}
         editable={(election.data.status as ElectionStatus) === "draft"}

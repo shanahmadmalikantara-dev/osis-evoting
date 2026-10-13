@@ -61,24 +61,27 @@ export function CandidateManager({ candidates, editable }: { candidates: Candida
       ) : null}
 
       {candidates.length === 0 ? (
-        <p className="font-hand text-xl text-ink-soft">Belum ada paslon.</p>
+        <p className="font-hand text-2xl font-bold text-on-dark">Belum ada paslon.</p>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2">
+        <ul className="grid gap-8 md:grid-cols-2">
           {candidates.map((c) => (
             <li
               key={c.id}
               data-testid={`candidate-${c.nomor_urut}`}
-              className="flex gap-4 rounded-card border-2 border-ink bg-surface p-4 shadow-card"
+              className="fx-tile manila relative flex gap-5 p-5"
             >
-              <div className="relative h-32 w-24 shrink-0 overflow-hidden border-2 border-ink bg-paper">
-                {c.foto_url ? <Image src={c.foto_url} alt="" fill unoptimized className="object-cover" /> : null}
+              <div className="paper relative h-36 w-28 shrink-0 -rotate-3 p-1.5 pb-4">
+                <span aria-hidden className="pin absolute -top-2 left-1/2 z-10 size-4 -translate-x-1/2" />
+                <div className="relative size-full overflow-hidden bg-paper">
+                {c.foto_url ? <Image src={c.foto_url} alt="" fill unoptimized className="object-cover sepia-[0.3]" /> : null}
+                </div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="font-display text-2xl">PASLON {c.nomor_urut}</span>
-                <span className="font-semibold">
+                <span className="font-display text-3xl font-black">Paslon {c.nomor_urut}</span>
+                <span className="font-type">
                   {c.nama_ketua} &amp; {c.nama_wakil}
                 </span>
-                <p className="line-clamp-3 whitespace-pre-line text-sm text-ink-soft">{c.visi_misi || "—"}</p>
+                <p className="line-clamp-3 whitespace-pre-line font-hand text-lg leading-tight text-ink-soft">{c.visi_misi || "—"}</p>
                 {editable ? (
                   <div className="mt-auto flex gap-2 pt-2">
                     <Button
@@ -123,10 +126,10 @@ export function CandidateManager({ candidates, editable }: { candidates: Candida
       <Modal open={deleting !== null} onClose={() => !busy && setDeleting(null)} labelledBy="delete-title">
         {deleting ? (
           <div className="flex flex-col gap-5">
-            <h2 id="delete-title" className="text-2xl font-semibold">
+            <h2 id="delete-title" className="font-display text-3xl font-black">
               Hapus Paslon {deleting.nomor_urut}?
             </h2>
-            <p className="text-ink-soft">
+            <p className="font-type text-ink">
               {deleting.nama_ketua} &amp; {deleting.nama_wakil} akan dihapus beserta fotonya.
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -224,17 +227,17 @@ function CandidateForm({
     }
   }
 
-  const field = "rounded-sticker border-2 border-ink bg-surface px-3 py-2 text-base";
-  const label = "font-mono text-xs font-bold uppercase tracking-widest";
+  const field = "paper rounded-sticker border-b-2 border-ink px-3 py-2 font-type text-base shadow-sticker focus:shadow-[0_0_0_3px_var(--color-pink)] focus:outline-none";
+  const label = "font-type text-xs uppercase tracking-widest text-ink-soft";
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
-      <h2 id="candidate-form-title" className="font-display text-3xl">
+      <h2 id="candidate-form-title" className="font-display text-3xl font-black">
         {initial ? `UBAH PASLON ${initial.nomor_urut}` : "TAMBAH PASLON"}
       </h2>
 
       <div className="flex gap-4">
-        <div className="relative h-36 w-28 shrink-0 overflow-hidden border-2 border-ink bg-paper">
+        <div className="paper relative h-36 w-28 shrink-0 -rotate-2 overflow-hidden border-[6px] border-surface">
           {preview ? <Image src={preview} alt="Pratinjau foto" fill unoptimized className="object-cover" /> : null}
         </div>
         <label className="flex flex-1 flex-col gap-2">
@@ -244,9 +247,9 @@ function CandidateForm({
             name="foto"
             accept={PHOTO_TYPES.join(",")}
             onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-            className="text-sm file:mr-3 file:border-2 file:border-ink file:bg-yellow file:px-3 file:py-1.5 file:font-mono file:text-xs file:font-bold file:uppercase"
+            className="text-sm file:mr-3 file:border-2 file:border-ink file:bg-surface file:px-3 file:py-1.5 file:font-type file:text-xs file:uppercase"
           />
-          <span className="text-xs text-ink-soft">Disarankan foto berdua, rasio potret 4:5.</span>
+          <span className="font-type text-xs text-ink-soft">Disarankan foto berdua, rasio potret 4:5.</span>
         </label>
       </div>
 
