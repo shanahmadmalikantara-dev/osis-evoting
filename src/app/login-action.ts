@@ -37,7 +37,9 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
     if (await isLoginBlocked(keys)) {
       return { error: "Terlalu banyak percobaan gagal. Tunggu 15 menit lalu coba lagi." };
     }
-  } catch {
+  } catch (error) {
+    // Usually a wrong or missing SUPABASE_SERVICE_ROLE_KEY on the host; visible in the Vercel logs.
+    console.error(error);
     return { error: "Server sedang bermasalah. Coba lagi sebentar." };
   }
 
