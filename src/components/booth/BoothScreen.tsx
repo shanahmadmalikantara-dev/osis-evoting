@@ -1,9 +1,10 @@
 "use client";
 
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CandidateCard } from "@/components/booth/CandidateCard";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import { CandidateCard, accentStyle } from "@/components/booth/CandidateCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Sticker } from "@/components/ui/Sticker";
@@ -108,25 +109,23 @@ export function BoothScreen({
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-8">
+    <div className="flex flex-1 flex-col gap-5">
       {election.test_mode ? (
-        <div role="status" className="rounded-sticker border-2 border-ink bg-pink px-4 py-2 text-center font-mono text-xs font-bold uppercase tracking-widest text-white">
+        <div
+          role="status"
+          className="booth-tape rounded-sticker border-[3px] border-ink px-4 py-2 text-center font-mono text-xs font-bold uppercase tracking-widest text-white shadow-sticker"
+        >
           Mode uji coba · suara ini tidak dihitung
         </div>
       ) : null}
 
-      <header className="flex flex-col items-center gap-2 text-center">
-        <p className="font-hand text-xl">silakan pilih satu paslon</p>
-        <h1 className="font-display text-4xl sm:text-5xl">PILIH PASLON</h1>
-        <p className="font-mono text-xs font-bold uppercase tracking-widest text-ink-soft">
-          Ketuk kartu paslon pilihanmu
-        </p>
-      </header>
+      <BoothHeader />
 
-      <div className={`grid flex-1 auto-rows-fr gap-6 ${gridColumns(candidates.length)}`}>
-        {candidates.map((candidate) => (
+      <div className={`booth-grid grid flex-1 gap-6 ${gridColumns(candidates.length)}`}>
+        {candidates.map((candidate, index) => (
           <CandidateCard
             key={candidate.id}
+            index={index}
             candidate={candidate}
             disabled={phase.kind !== "choosing"}
             onSelect={(c) => setPhase({ kind: "confirming", candidate: c })}
@@ -144,13 +143,44 @@ export function BoothScreen({
   );
 }
 
+const STEPS = ["Ketuk kartu paslon", "Periksa pilihanmu", "Tekan Ya, kirim"];
+
+function BoothHeader() {
+  return (
+    <header className="flex animate-fade flex-col items-center gap-3 text-center">
+      <div className="flex items-center gap-3">
+        <Sticker color="blue" rotate={-3}>
+          Pemilu OSIS
+        </Sticker>
+        <span className="font-hand text-xl text-ink-soft">MAN 4 Jakarta</span>
+      </div>
+      <h1 className="font-display text-5xl tracking-wide [text-shadow:4px_4px_0_var(--color-yellow)] sm:text-6xl 2xl:text-7xl">
+        PILIH PASLON
+      </h1>
+      <ol className="flex flex-wrap items-center justify-center gap-2">
+        {STEPS.map((step, i) => (
+          <li
+            key={step}
+            className="flex items-center gap-2 rounded-full border-2 border-ink bg-surface py-1 pl-1 pr-3 font-mono text-[11px] font-bold uppercase tracking-widest"
+          >
+            <span className="grid size-5 place-items-center rounded-full bg-ink text-[10px] text-on-dark">{i + 1}</span>
+            {step}
+          </li>
+        ))}
+      </ol>
+    </header>
+  );
+}
+
+// One row of cards fills the screen height; more rows keep a comfortable minimum and scroll.
 function gridColumns(count: number): string {
-  if (count <= 1) return "grid-cols-1 max-w-sm mx-auto w-full";
-  if (count === 2) return "grid-cols-2 max-w-3xl mx-auto w-full";
-  if (count === 3) return "grid-cols-1 sm:grid-cols-3";
-  if (count === 4) return "grid-cols-2 lg:grid-cols-4";
-  if (count <= 6) return "grid-cols-2 md:grid-cols-3";
-  return "grid-cols-2 md:grid-cols-4";
+  const rows = "auto-rows-[minmax(24rem,1fr)]";
+  if (count <= 1) return `${rows} grid-cols-1 max-w-sm mx-auto w-full`;
+  if (count === 2) return `${rows} grid-cols-2 max-w-3xl mx-auto w-full`;
+  if (count === 3) return `${rows} grid-cols-1 sm:grid-cols-3 max-w-6xl mx-auto w-full`;
+  if (count === 4) return `${rows} grid-cols-2 lg:grid-cols-4`;
+  if (count <= 6) return `${rows} grid-cols-2 md:grid-cols-3`;
+  return `${rows} grid-cols-2 md:grid-cols-4`;
 }
 
 function ConfirmModal({
@@ -171,17 +201,32 @@ function ConfirmModal({
   return (
     <Modal open={open} onClose={sending || phase.kind === "error" ? () => {} : onCancel} labelledBy="confirm-title">
       {candidate ? (
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <Sticker color="yellow" rotate={-2}>
-              Konfirmasi
-            </Sticker>
-            <h2 id="confirm-title" className="text-2xl font-semibold leading-snug">
-              Yakin memilih Paslon {candidate.nomor_urut}?
-            </h2>
-            <p className="font-hand text-xl text-ink-soft">
-              {candidate.nama_ketua} &amp; {candidate.nama_wakil}
-            </p>
+        <div className="flex flex-col gap-6" style={accentStyle(candidate.nomor_urut)}>
+          <div className="flex items-center gap-5">
+            <div className="relative h-32 w-26 shrink-0 sm:h-36 sm:w-28">
+              <div className="absolute inset-0 overflow-hidden rounded-card border-[3px] border-ink bg-[var(--accent)] shadow-[4px_4px_0_var(--color-ink)]">
+                {candidate.foto_url ? (
+                  <Image src={candidate.foto_url} alt="" fill unoptimized sizes="120px" className="object-cover object-top" />
+                ) : null}
+              </div>
+              <span
+                aria-hidden
+                className="absolute -bottom-3 -right-3 grid size-11 rotate-6 place-items-center rounded-sticker border-[3px] border-ink bg-[var(--accent)] font-display text-2xl text-[var(--on-accent)]"
+              >
+                {candidate.nomor_urut}
+              </span>
+            </div>
+            <div className="flex min-w-0 flex-col gap-2">
+              <Sticker color="yellow" rotate={-2}>
+                Konfirmasi
+              </Sticker>
+              <h2 id="confirm-title" className="text-2xl font-bold leading-snug sm:text-3xl">
+                Yakin memilih Paslon {candidate.nomor_urut}?
+              </h2>
+              <p className="font-hand text-xl leading-snug text-ink-soft">
+                {candidate.nama_ketua} &amp; {candidate.nama_wakil}
+              </p>
+            </div>
           </div>
 
           {phase.kind === "error" ? (
@@ -240,9 +285,17 @@ function AutoCancel({ onTimeout }: { onTimeout: () => void }) {
   }, []);
 
   return (
-    <p className="text-center font-mono text-xs uppercase tracking-widest text-ink-soft">
-      Otomatis batal dalam {left} detik
-    </p>
+    <div className="flex flex-col gap-2">
+      <div aria-hidden className="h-2 overflow-hidden rounded-full border-2 border-ink bg-paper">
+        <div
+          className="h-full origin-left bg-[var(--accent)]"
+          style={{ animation: `drain ${CONFIRM_TIMEOUT_SECONDS}s linear both` }}
+        />
+      </div>
+      <p className="text-center font-mono text-xs uppercase tracking-widest text-ink-soft">
+        Otomatis batal dalam {left} detik
+      </p>
+    </div>
   );
 }
 
@@ -257,30 +310,103 @@ function ThanksScreen({ onDone }: { onDone: () => void }) {
   }, []);
 
   return (
-    <div role="status" className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
-      <Sticker color="mint" rotate={-3}>
-        Suara tercatat
-      </Sticker>
-      <h1 className="font-display text-6xl sm:text-8xl">TERIMA KASIH</h1>
-      <p className="font-hand text-2xl text-ink-soft">Suaramu sudah masuk. Silakan keluar dari bilik.</p>
+    <div role="status" className="relative flex flex-1 flex-col items-center justify-center gap-6 overflow-hidden text-center">
+      <Confetti />
+      <div className="grid size-36 animate-stamp place-items-center rounded-full border-[6px] border-success bg-surface text-success shadow-card sm:size-44">
+        <svg aria-hidden viewBox="0 0 24 24" className="size-20 sm:size-24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4.5 12.5l5 5L19.5 7" />
+        </svg>
+      </div>
+      <div className="flex animate-rise flex-col items-center gap-4 [animation-delay:250ms]">
+        <Sticker color="mint" rotate={-3}>
+          Suara tercatat
+        </Sticker>
+        <h1 className="font-display text-6xl [text-shadow:5px_5px_0_var(--color-mint)] sm:text-8xl">TERIMA KASIH</h1>
+        <p className="font-hand text-2xl text-ink-soft">Suaramu sudah masuk. Silakan keluar dari bilik.</p>
+      </div>
+      <div className="mt-4 flex w-64 flex-col gap-2">
+        <div aria-hidden className="h-2 overflow-hidden rounded-full border-2 border-ink bg-surface">
+          <div className="h-full origin-left bg-ink" style={{ animation: `fill ${THANKS_SECONDS}s linear both` }} />
+        </div>
+        <p className="font-mono text-[11px] uppercase tracking-widest text-ink-soft">Layar kembali otomatis</p>
+      </div>
+    </div>
+  );
+}
+
+const CONFETTI_COLORS = ["bg-yellow", "bg-mint", "bg-pink", "bg-blue", "bg-green", "bg-red"];
+
+// Deterministic pieces (no Math.random) so server and client render the same markup.
+function Confetti() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {Array.from({ length: 28 }, (_, i) => {
+        const left = (i * 37) % 100;
+        const size = 8 + ((i * 7) % 10);
+        const style = {
+          left: `${left}%`,
+          width: size,
+          height: size * (i % 3 === 0 ? 2.2 : 1),
+          animation: `confetti ${2.4 + (i % 5) * 0.35}s ${(i % 7) * 0.12}s cubic-bezier(0.2,0.6,0.4,1) both`,
+          "--drift": `${((i * 53) % 160) - 80}px`,
+          "--spin": `${360 + ((i * 97) % 540)}deg`,
+        } as CSSProperties;
+        return (
+          <span
+            key={i}
+            className={`absolute top-0 rounded-[2px] border-2 border-ink ${CONFETTI_COLORS[i % CONFETTI_COLORS.length]}`}
+            style={style}
+          />
+        );
+      })}
     </div>
   );
 }
 
 function ClosedScreen({ status }: { status: ElectionState["status"] }) {
+  const closed = status === "closed";
   return (
-    <div role="status" className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
-      <Sticker color={status === "closed" ? "pink" : "yellow"} rotate={-2}>
-        {status === "closed" ? "Selesai" : "Belum mulai"}
-      </Sticker>
-      <h1 className="font-display text-4xl sm:text-6xl">
-        {status === "closed" ? "SUDAH DITUTUP" : "BELUM DIBUKA"}
-      </h1>
-      <p className="font-hand text-2xl text-ink-soft">
-        {status === "closed"
-          ? "Pemungutan suara sudah ditutup. Terima kasih."
-          : "Pemungutan suara belum dibuka. Mohon tunggu petugas."}
-      </p>
+    <div role="status" className="flex flex-1 items-center justify-center">
+      <div className="flex w-full max-w-2xl animate-pop flex-col items-center gap-6 rounded-modal border-[3px] border-ink bg-surface px-8 py-12 text-center shadow-card-lift">
+        <div
+          className={`grid size-24 -rotate-6 place-items-center rounded-card border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] ${closed ? "bg-pink text-white" : "bg-yellow"}`}
+        >
+          {closed ? <LockIcon /> : <ClockIcon />}
+        </div>
+        <Sticker color={closed ? "pink" : "yellow"} rotate={-2}>
+          {closed ? "Selesai" : "Belum mulai"}
+        </Sticker>
+        <h1 className="font-display text-5xl sm:text-7xl">{closed ? "SUDAH DITUTUP" : "BELUM DIBUKA"}</h1>
+        <p className="font-hand text-2xl text-ink-soft">
+          {closed
+            ? "Pemungutan suara sudah ditutup. Terima kasih."
+            : "Pemungutan suara belum dibuka. Mohon tunggu petugas."}
+        </p>
+        {closed ? null : (
+          <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-ink-soft">
+            <span aria-hidden className="size-2 rounded-full bg-green [animation:blink_1.4s_ease-in-out_infinite]" />
+            Layar terbuka sendiri saat voting dimulai
+          </p>
+        )}
+      </div>
     </div>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className="size-12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className="size-12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </svg>
   );
 }

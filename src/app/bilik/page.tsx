@@ -1,5 +1,4 @@
 import { BoothScreen } from "@/components/booth/BoothScreen";
-import { PageShell } from "@/components/ui/PageShell";
 import { requireRole } from "@/lib/auth";
 import { getServerClient } from "@/lib/supabase/server";
 import type { Candidate, ElectionState } from "@/lib/types";
@@ -23,11 +22,13 @@ export default async function BilikPage() {
   }
 
   return (
-    <PageShell wide>
-      <BoothScreen
-        candidates={candidatesResult.data as Candidate[]}
-        initialElection={electionResult.data as ElectionState}
-      />
-    </PageShell>
+    <main className="flex h-dvh flex-col overflow-y-auto px-gutter py-5 sm:px-8">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col">
+        <BoothScreen
+          candidates={candidatesResult.data as Candidate[]}
+          initialElection={electionResult.data as ElectionState}
+        />
+      </div>
+    </main>
   );
 }

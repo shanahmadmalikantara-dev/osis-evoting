@@ -6,5 +6,4 @@
     <circle cx="265" cy="215" r="48"/>
     <path d="M185 420c0-62 36-115 80-115s80 53 80 115z"/>
   </g>
-  <text x="200" y="480" text-anchor="middle" font-family="monospace" font-size="28" font-weight="700" fill="#FFFFFF">PASLON 4</text>
 </svg>

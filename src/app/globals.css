@@ -44,6 +44,15 @@
   --shadow-sticker: 0 2px 0 rgb(27 27 27 / 0.18);
   --shadow-card: 4px 4px 0 #1b1b1b;
   --shadow-card-hover: 7px 7px 0 #1b1b1b;
+  --shadow-card-lift: 10px 14px 0 #1b1b1b;
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-rise: rise 0.55s var(--ease-out-soft) backwards;
+  --animate-pop: pop 0.32s var(--ease-spring) both;
+  --animate-stamp: stamp 0.6s var(--ease-spring) both;
+  --animate-fade: fade 0.4s ease-out both;
 
   /* Layout */
   --spacing-gutter: 16px;
@@ -74,6 +83,136 @@ body {
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Booth (bilik) styling. Card accent color comes from the --accent / --on-accent
+ * variables set per candidate in CandidateCard.tsx.
+ * ------------------------------------------------------------------------- */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes stamp {
+  0% { opacity: 0; transform: scale(2.2) rotate(-18deg); }
+  60% { opacity: 1; transform: scale(0.92) rotate(-6deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-8deg); }
+}
+@keyframes drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+@keyframes fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes confetti {
+  0% { opacity: 0; transform: translate3d(0, -20vh, 0) rotate(0deg); }
+  10% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--drift, 0), 110vh, 0) rotate(var(--spin, 540deg)); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-6deg) scale(1.12); }
+  50% { transform: rotate(5deg) scale(1.12); }
+}
+@keyframes tape {
+  from { background-position: 0 0; }
+  to { background-position: 56px 0; }
+}
+@keyframes blink {
+  50% { opacity: 0.25; }
+}
+
+.booth-card {
+  --accent: var(--color-yellow);
+  --on-accent: var(--color-ink);
+  transition:
+    transform 0.35s var(--ease-spring),
+    box-shadow 0.35s var(--ease-out-soft),
+    opacity 0.3s ease,
+    filter 0.3s ease;
+}
+.booth-card:hover,
+.booth-card:focus-visible {
+  transform: translateY(-10px) rotate(-0.8deg);
+  box-shadow:
+    0 0 0 5px var(--accent),
+    0 0 0 8px var(--color-ink),
+    var(--shadow-card-lift);
+  outline: none;
+}
+.booth-card:active {
+  transform: translateY(2px) scale(0.985);
+  box-shadow: 2px 2px 0 var(--color-ink);
+  transition-duration: 0.08s;
+}
+/* While one card is hovered, the others step back so the choice stands out. */
+.booth-grid:has(.booth-card:hover) .booth-card:not(:hover) {
+  opacity: 0.55;
+  filter: saturate(0.5);
+  transform: scale(0.97);
+}
+.booth-card .booth-photo {
+  transition: transform 0.6s var(--ease-out-soft);
+}
+.booth-card:hover .booth-photo,
+.booth-card:focus-visible .booth-photo {
+  transform: scale(1.07);
+}
+.booth-card .booth-shine {
+  transform: translateX(-260%) skewX(-18deg);
+  transition: transform 0.9s var(--ease-out-soft);
+}
+.booth-card:hover .booth-shine {
+  transform: translateX(360%) skewX(-18deg);
+}
+.booth-card .booth-number {
+  transform: rotate(-6deg);
+  transition: transform 0.35s var(--ease-spring);
+}
+.booth-card:hover .booth-number,
+.booth-card:focus-visible .booth-number {
+  animation: wiggle 0.7s ease-in-out infinite;
+}
+.booth-card .booth-cta {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.booth-card:hover .booth-cta,
+.booth-card:focus-visible .booth-cta {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+.booth-card .booth-arrow {
+  transition: transform 0.35s var(--ease-spring);
+}
+.booth-card:hover .booth-arrow {
+  transform: translateX(6px);
+}
+
+.booth-tape {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-pink) 0 14px,
+    #e23d8c 14px 28px
+  );
+  animation: tape 1.6s linear infinite;
+}
+
+dialog[open] {
+  animation: pop 0.32s var(--ease-spring) both;
+}
+dialog[open]::backdrop {
+  animation: fade 0.25s ease-out both;
+  backdrop-filter: blur(3px);
 }
 
 @media (prefers-reduced-motion: reduce) {

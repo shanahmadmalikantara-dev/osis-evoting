@@ -28,6 +28,12 @@ test.describe("booth", () => {
     await expect(page.getByRole("heading", { name: "PILIH PASLON" })).toBeVisible();
     for (const n of [1, 2, 3, 4]) await expect(card(page, n)).toBeVisible();
 
+    // Measure at rest: no hover effect, entrance animation finished.
+    await page.mouse.move(0, 0);
+    for (const n of [1, 2, 3, 4]) {
+      await card(page, n).evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+    }
+    await page.waitForTimeout(400);
     const boxes = await Promise.all([1, 2, 3, 4].map((n) => card(page, n).boundingBox()));
     const sizes = boxes.map((b) => `${Math.round(b!.width)}x${Math.round(b!.height)}`);
     expect(new Set(sizes).size).toBe(1);
