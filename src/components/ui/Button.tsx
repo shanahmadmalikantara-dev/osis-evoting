@@ -25,7 +25,9 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export function buttonClasses(variant: Variant = "primary", size: Size = "lg", extra = "") {
   return [
     "inline-flex items-center justify-center gap-3 border-2 font-mono font-bold uppercase tracking-widest",
-    "rounded-sticker shadow-sticker transition-[background-color,transform] active:translate-y-px",
+    "rounded-sticker shadow-sticker transition-[background-color,color,transform,box-shadow] duration-200",
+    "hover:-translate-y-0.5 hover:shadow-[3px_4px_0_var(--color-ink)] active:translate-y-px active:shadow-none",
+    "disabled:hover:translate-y-0 disabled:hover:shadow-sticker",
     "disabled:cursor-not-allowed disabled:opacity-50",
     VARIANTS[variant],
     SIZES[size],

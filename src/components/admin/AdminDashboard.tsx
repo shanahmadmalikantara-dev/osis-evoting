@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { runLifecycle, type LifecycleAction } from "@/app/admin/(panel)/actions";
 import { ResultsView } from "@/components/admin/ResultsView";
-import { Button, buttonClasses } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Notice } from "@/components/ui/Notice";
 import { Sticker, type StickerColor } from "@/components/ui/Sticker";
@@ -122,14 +122,25 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="flex flex-col gap-5 rounded-card border-2 border-ink bg-surface p-5 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-ink-soft">Status</span>
-            <Sticker color={state.color}>{state.label}</Sticker>
-            <LiveBadge live={live} error={fetchError} at={results.generated_at} />
+      <section
+        className="fx-tile relative flex animate-rise flex-col gap-5 overflow-hidden rounded-card border-[3px] border-ink bg-surface p-5 pl-7 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-6 sm:pl-9"
+      >
+        <span aria-hidden className={`absolute inset-y-0 left-0 w-3 border-r-[3px] border-ink ${state.bar}`} />
+        <div className="flex items-center gap-5">
+          <span
+            aria-hidden
+            className={`hidden size-16 shrink-0 -rotate-6 place-items-center rounded-card border-[3px] border-ink text-3xl shadow-[3px_3px_0_var(--color-ink)] sm:grid ${state.bar}`}
+          >
+            {state.icon}
+          </span>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-ink-soft">Status</span>
+              <Sticker color={state.color}>{state.label}</Sticker>
+              <LiveBadge live={live} error={fetchError} at={results.generated_at} />
+            </div>
+            <p className="font-hand text-xl text-ink-soft">{state.hint}</p>
           </div>
-          <p className="font-hand text-lg text-ink-soft">{state.hint}</p>
         </div>
         <div className="flex flex-wrap gap-3">
           {results.status === "draft" ? (
@@ -161,23 +172,28 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
 
       <ResultsView results={results} />
 
-      <section className="flex flex-wrap items-center gap-3 rounded-card border-2 border-ink bg-surface p-5 shadow-card">
-        <span className="mr-2 font-display text-2xl">EKSPOR HASIL</span>
-        <a href="/admin/export/csv" download className={buttonClasses("secondary", "md")}>
-          ↓ CSV (Excel)
-        </a>
-        <a href="/admin/export/pdf" download className={buttonClasses("secondary", "md")}>
-          ↓ PDF
-        </a>
-        <span className="text-sm text-ink-soft">
-          {results.status === "closed" ? "Hasil akhir." : "Sebelum voting ditutup, file ditandai SEMENTARA."}
-        </span>
+      <section aria-labelledby="export-title" className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="export-title" className="font-display text-2xl">
+            EKSPOR HASIL
+          </h2>
+          <span className="font-hand text-lg text-ink-soft">
+            {results.status === "closed" ? "Hasil akhir." : "Sebelum voting ditutup, file ditandai SEMENTARA."}
+          </span>
+        </div>
+        <div className="fx-grid grid gap-5 sm:grid-cols-2">
+          <ExportCard href="/admin/export/csv" label="CSV (Excel)" body="Untuk diolah di Excel atau Google Sheets." accent="var(--color-mint)" />
+          <ExportCard href="/admin/export/pdf" label="PDF" body="Siap cetak, ada kolom tanda tangan saksi." accent="var(--color-yellow)" />
+        </div>
       </section>
 
       <Modal open={confirming !== null} onClose={() => !busy && setConfirming(null)} labelledBy="lifecycle-title">
         {confirming ? (
           <div className="flex flex-col gap-5">
-            <h2 id="lifecycle-title" className="text-2xl font-semibold leading-snug">
+            <Sticker color={confirming.danger ? "pink" : "yellow"} rotate={-2}>
+              {confirming.danger ? "Langkah final" : "Konfirmasi"}
+            </Sticker>
+            <h2 id="lifecycle-title" className="text-2xl font-bold leading-snug sm:text-3xl">
               {confirming.title}
             </h2>
             <p className="text-ink-soft">{confirming.body}</p>
@@ -196,17 +212,51 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
   );
 }
 
-function statusInfo(results: Results): { label: string; color: StickerColor; hint: string } {
+function statusInfo(results: Results): { label: string; color: StickerColor; hint: string; bar: string; icon: string } {
   if (results.status === "open" && results.test_mode) {
-    return { label: "Uji coba", color: "pink", hint: "Bilik menerima suara uji. Akhiri uji coba sebelum voting sungguhan." };
+    return {
+      label: "Uji coba",
+      color: "pink",
+      hint: "Bilik menerima suara uji. Akhiri uji coba sebelum voting sungguhan.",
+      bar: "bg-pink text-white",
+      icon: "⚑",
+    };
   }
   if (results.status === "open") {
-    return { label: "Dibuka", color: "green", hint: "Pemungutan suara sedang berlangsung." };
+    return { label: "Dibuka", color: "green", hint: "Pemungutan suara sedang berlangsung.", bar: "bg-green text-white", icon: "●" };
   }
   if (results.status === "closed") {
-    return { label: "Ditutup", color: "blue", hint: "Pemungutan suara selesai. Hasil di bawah adalah hasil akhir." };
+    return {
+      label: "Ditutup",
+      color: "blue",
+      hint: "Pemungutan suara selesai. Hasil di bawah adalah hasil akhir.",
+      bar: "bg-blue text-white",
+      icon: "■",
+    };
   }
-  return { label: "Draft", color: "yellow", hint: "Belum dibuka. Paslon masih bisa diubah." };
+  return { label: "Draft", color: "yellow", hint: "Belum dibuka. Paslon masih bisa diubah.", bar: "bg-yellow", icon: "✎" };
+}
+
+function ExportCard({ href, label, body, accent }: { href: string; label: string; body: string; accent: string }) {
+  return (
+    <a
+      href={href}
+      download
+      style={{ "--accent": accent, "--lift": "-6px", "--tilt": "-0.5deg" } as CSSProperties}
+      className="fx-card flex items-center gap-4 rounded-card border-[3px] border-ink bg-surface p-4 shadow-card"
+    >
+      <span className="fx-wiggle grid size-14 shrink-0 place-items-center rounded-card border-[3px] border-ink bg-[var(--accent)] text-2xl shadow-[3px_3px_0_var(--color-ink)]">
+        ↓
+      </span>
+      <span className="flex flex-1 flex-col">
+        <span className="font-mono text-sm font-bold uppercase tracking-widest">{label}</span>
+        <span className="text-sm text-ink-soft">{body}</span>
+      </span>
+      <span aria-hidden className="fx-arrow text-xl">
+        →
+      </span>
+    </a>
+  );
 }
 
 function LiveBadge({ live, error, at }: { live: boolean; error: boolean; at: string }) {

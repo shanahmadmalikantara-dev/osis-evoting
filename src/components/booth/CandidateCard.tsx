@@ -1,25 +1,6 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { accentStyle } from "@/lib/accent";
 import type { Candidate } from "@/lib/types";
-
-// One accent per ballot number; the hover ring, number badge and "Pilih" bar use it.
-const ACCENTS = [
-  { accent: "var(--color-yellow)", onAccent: "var(--color-ink)" },
-  { accent: "var(--color-mint)", onAccent: "var(--color-ink)" },
-  { accent: "var(--color-pink)", onAccent: "#ffffff" },
-  { accent: "var(--color-blue)", onAccent: "#ffffff" },
-  { accent: "var(--color-green)", onAccent: "#ffffff" },
-  { accent: "var(--color-red)", onAccent: "#ffffff" },
-];
-
-export function candidateAccent(nomorUrut: number) {
-  return ACCENTS[(nomorUrut - 1) % ACCENTS.length];
-}
-
-export function accentStyle(nomorUrut: number): CSSProperties {
-  const { accent, onAccent } = candidateAccent(nomorUrut);
-  return { "--accent": accent, "--on-accent": onAccent } as CSSProperties;
-}
 
 export function CandidateCard({
   candidate,
@@ -39,7 +20,7 @@ export function CandidateCard({
       onClick={() => onSelect(candidate)}
       aria-label={`Paslon ${candidate.nomor_urut}: ${candidate.nama_ketua} dan ${candidate.nama_wakil}`}
       style={{ ...accentStyle(candidate.nomor_urut), animationDelay: `${120 + index * 90}ms` }}
-      className="booth-card flex h-full min-h-0 w-full animate-rise cursor-pointer flex-col rounded-card border-[3px] border-ink bg-surface text-left shadow-card disabled:pointer-events-none"
+      className="fx-card flex h-full min-h-0 w-full animate-rise cursor-pointer flex-col rounded-card border-[3px] border-ink bg-surface text-left shadow-card disabled:pointer-events-none"
     >
       <div className="relative min-h-0 flex-1">
         <div className="absolute inset-0 overflow-hidden rounded-t-[7px] border-b-[3px] border-ink bg-[var(--accent)]">
@@ -50,15 +31,15 @@ export function CandidateCard({
               fill
               unoptimized
               sizes="(min-width: 1024px) 25vw, 50vw"
-              className="booth-photo object-cover object-top"
+              className="fx-zoom object-cover object-top"
               priority
             />
           ) : null}
-          <span aria-hidden className="booth-shine absolute inset-y-0 left-0 w-1/3 bg-white/35" />
+          <span aria-hidden className="fx-shine absolute inset-y-0 left-0 w-1/3 bg-white/35" />
         </div>
         <span
           aria-hidden
-          className="booth-number absolute -bottom-7 left-4 grid size-16 place-items-center rounded-sticker border-[3px] border-ink bg-[var(--accent)] font-display text-4xl text-[var(--on-accent)] shadow-[3px_3px_0_var(--color-ink)]"
+          className="fx-wiggle absolute -bottom-7 left-4 grid size-16 place-items-center rounded-sticker border-[3px] border-ink bg-[var(--accent)] font-display text-4xl text-[var(--on-accent)] shadow-[3px_3px_0_var(--color-ink)]"
         >
           {candidate.nomor_urut}
         </span>
@@ -69,9 +50,9 @@ export function CandidateCard({
         <NameRow role="Wakil" name={candidate.nama_wakil} />
       </div>
 
-      <span className="booth-cta flex items-center justify-between rounded-b-[7px] border-t-[3px] border-ink bg-ink px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-on-dark">
+      <span className="fx-cta flex items-center justify-between rounded-b-[7px] border-t-[3px] border-ink bg-ink px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-on-dark">
         Pilih paslon {candidate.nomor_urut}
-        <span aria-hidden className="booth-arrow text-lg">
+        <span aria-hidden className="fx-arrow text-lg">
           →
         </span>
       </span>

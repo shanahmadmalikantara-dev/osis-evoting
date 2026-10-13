@@ -11,9 +11,9 @@ export default async function AdminPage() {
 
   return (
     <>
-      <header className="flex flex-col gap-1">
-        <p className="font-hand text-lg">pemilihan ketua &amp; wakil ketua osis</p>
-        <h1 className="font-display text-4xl sm:text-5xl">DASHBOARD</h1>
+      <header className="flex animate-fade flex-col gap-1">
+        <p className="font-hand text-xl">pemilihan ketua &amp; wakil ketua osis</p>
+        <h1 className="font-display text-5xl [text-shadow:4px_4px_0_var(--color-yellow)] sm:text-6xl">DASHBOARD</h1>
       </header>
       <AdminDashboard initialResults={data as Results} />
     </>

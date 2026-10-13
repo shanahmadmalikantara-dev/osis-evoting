@@ -86,8 +86,9 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
- * Booth (bilik) styling. Card accent color comes from the --accent / --on-accent
- * variables set per candidate in CandidateCard.tsx.
+ * Interactive cards (booth candidates, home role cards, dashboard tiles).
+ * Accent color comes from --accent / --on-accent set on the element; the lift
+ * height and tilt come from --lift / --tilt.
  * ------------------------------------------------------------------------- */
 
 @keyframes rise {
@@ -132,70 +133,90 @@ body {
   50% { opacity: 0.25; }
 }
 
-.booth-card {
+.fx-card {
   --accent: var(--color-yellow);
   --on-accent: var(--color-ink);
+  --lift: -10px;
+  --tilt: -0.8deg;
   transition:
     transform 0.35s var(--ease-spring),
     box-shadow 0.35s var(--ease-out-soft),
     opacity 0.3s ease,
     filter 0.3s ease;
 }
-.booth-card:hover,
-.booth-card:focus-visible {
-  transform: translateY(-10px) rotate(-0.8deg);
+.fx-card:hover,
+.fx-card:focus-visible {
+  transform: translateY(var(--lift)) rotate(var(--tilt));
   box-shadow:
     0 0 0 5px var(--accent),
     0 0 0 8px var(--color-ink),
     var(--shadow-card-lift);
   outline: none;
 }
-.booth-card:active {
+.fx-card:active {
   transform: translateY(2px) scale(0.985);
   box-shadow: 2px 2px 0 var(--color-ink);
   transition-duration: 0.08s;
 }
 /* While one card is hovered, the others step back so the choice stands out. */
-.booth-grid:has(.booth-card:hover) .booth-card:not(:hover) {
+.fx-grid:has(.fx-card:hover) .fx-card:not(:hover) {
   opacity: 0.55;
   filter: saturate(0.5);
   transform: scale(0.97);
 }
-.booth-card .booth-photo {
+.fx-card .fx-zoom {
   transition: transform 0.6s var(--ease-out-soft);
 }
-.booth-card:hover .booth-photo,
-.booth-card:focus-visible .booth-photo {
+.fx-card:hover .fx-zoom,
+.fx-card:focus-visible .fx-zoom {
   transform: scale(1.07);
 }
-.booth-card .booth-shine {
+.fx-card .fx-shine {
   transform: translateX(-260%) skewX(-18deg);
   transition: transform 0.9s var(--ease-out-soft);
 }
-.booth-card:hover .booth-shine {
+.fx-card:hover .fx-shine {
   transform: translateX(360%) skewX(-18deg);
 }
-.booth-card .booth-number {
+.fx-card .fx-wiggle {
   transform: rotate(-6deg);
   transition: transform 0.35s var(--ease-spring);
 }
-.booth-card:hover .booth-number,
-.booth-card:focus-visible .booth-number {
+.fx-card:hover .fx-wiggle,
+.fx-card:focus-visible .fx-wiggle {
   animation: wiggle 0.7s ease-in-out infinite;
 }
-.booth-card .booth-cta {
+.fx-card .fx-cta {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
-.booth-card:hover .booth-cta,
-.booth-card:focus-visible .booth-cta {
+.fx-card:hover .fx-cta,
+.fx-card:focus-visible .fx-cta {
   background-color: var(--accent);
   color: var(--on-accent);
 }
-.booth-card .booth-arrow {
+.fx-card .fx-arrow {
   transition: transform 0.35s var(--ease-spring);
 }
-.booth-card:hover .booth-arrow {
+.fx-card:hover .fx-arrow {
   transform: translateX(6px);
+}
+
+/* Calmer hover for dashboard panels: small lift, deeper shadow. */
+.fx-tile {
+  transition:
+    transform 0.3s var(--ease-spring),
+    box-shadow 0.3s var(--ease-out-soft);
+}
+.fx-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-lift);
+}
+
+/* Bar that grows from the left when it first appears and on every change. */
+.fx-bar {
+  transform-origin: left;
+  animation: fill 0.9s var(--ease-out-soft) both;
+  transition: width 0.7s var(--ease-out-soft);
 }
 
 .booth-tape {

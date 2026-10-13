@@ -4,10 +4,11 @@ import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { CandidateCard, accentStyle } from "@/components/booth/CandidateCard";
+import { CandidateCard } from "@/components/booth/CandidateCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Sticker } from "@/components/ui/Sticker";
+import { accentStyle } from "@/lib/accent";
 import { authorizeRealtime, getBrowserClient } from "@/lib/supabase/browser";
 import type { Candidate, ElectionState } from "@/lib/types";
 import { RETRYABLE, VOTE_ERROR_TEXT, classifyVoteError, type VoteErrorKind } from "@/lib/vote-errors";
@@ -121,7 +122,7 @@ export function BoothScreen({
 
       <BoothHeader />
 
-      <div className={`booth-grid grid flex-1 gap-6 ${gridColumns(candidates.length)}`}>
+      <div className={`fx-grid grid flex-1 gap-6 ${gridColumns(candidates.length)}`}>
         {candidates.map((candidate, index) => (
           <CandidateCard
             key={candidate.id}
