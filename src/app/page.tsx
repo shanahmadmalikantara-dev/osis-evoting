@@ -27,7 +27,8 @@ const ROLES = [
 
 export default function HomePage() {
   return (
-    <main className="relative flex min-h-dvh flex-col overflow-hidden px-gutter py-10 sm:px-8">
+    <main className="relative isolate flex min-h-dvh flex-col overflow-hidden px-gutter py-10 sm:px-8">
+      <Backdrop />
       <Decorations />
 
       <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-14">
@@ -126,6 +127,17 @@ function CaseFile({
         </div>
       </div>
     </Link>
+  );
+}
+
+// Old photos, maps and newspapers on a desk, slowly drifting under a warm lamp.
+function Backdrop() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-frame">
+      <div className="absolute inset-0 animate-fade bg-[url('/bg/papan-detektif.webp')] bg-cover bg-center [animation:fade_1.2s_ease-out_both,drift_40s_ease-in-out_infinite_alternate]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgb(43_29_18/0.15)_0%,rgb(43_29_18/0.55)_60%,rgb(20_12_6/0.9)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgb(255_220_160/0.12)_45%,transparent_60%)] [animation:lamp_9s_ease-in-out_infinite_alternate]" />
+    </div>
   );
 }
 

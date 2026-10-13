@@ -251,6 +251,14 @@ body {
   from { stroke-dashoffset: var(--len, 1200); }
   to { stroke-dashoffset: 0; }
 }
+@keyframes drift {
+  from { transform: scale(1.08) translate(0, 0); }
+  to { transform: scale(1.16) translate(-2%, -1.5%); }
+}
+@keyframes lamp {
+  from { transform: translateX(-12%); opacity: 0.6; }
+  to { transform: translateX(12%); opacity: 1; }
+}
 @keyframes blink {
   50% { opacity: 0.25; }
 }
