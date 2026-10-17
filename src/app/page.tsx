@@ -79,9 +79,9 @@ function Headline() {
           <span>MAN 4 Jakarta</span>
         </div>
         <p className="mt-2 font-type text-sm uppercase tracking-[0.3em] text-ink-soft">Pemilihan ketua &amp; wakil ketua</p>
-        <h1 className="font-display text-6xl font-black uppercase leading-none tracking-tight sm:text-8xl">PEMILU OSIS</h1>
-        <p className="mt-2 border-t border-ink/40 pt-2 font-hand text-2xl font-bold text-pink">
-          Satu klik, satu suara. Kasus dibuka hari ini.
+        <h1 className="font-display text-5xl font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl">KADERISASI 2026</h1>
+        <p className="mx-auto mt-2 max-w-2xl border-t border-ink/40 pt-2 font-hand text-2xl font-bold leading-tight text-pink">
+          Integrity for Foundation, Wisdom for Direction: Leading Beyond Expectation
         </p>
       </div>
     </header>
