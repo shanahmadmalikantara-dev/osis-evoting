@@ -71,23 +71,31 @@
 }
 
 :root {
-  /* Fine grain used on paper and cork. */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0 0.05 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --cork-speckle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.14 0 0 0 0 0.05 0 0 0 1.1 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
+  /* Fine grain used on paper and cork. Pre-rendered tiles: live SVG noise made every repaint slow. */
+  --grain: url("/bg/grain.png");
+  --cork-speckle: url("/bg/cork.png");
 }
 
 html {
   background: var(--color-frame);
 }
 
-/* Cork board with a dark vignette, like a lamp-lit evidence wall. */
-body {
-  background-color: var(--color-cork);
+/* Fixed layer instead of background-attachment: fixed, which repaints the page on every scroll. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image:
     radial-gradient(ellipse at 50% 35%, transparent 35%, rgb(30 18 8 / 0.55) 100%),
     var(--cork-speckle),
     var(--grain);
-  background-attachment: fixed;
+}
+
+/* Cork board with a dark vignette, like a lamp-lit evidence wall. */
+body {
+  background-color: var(--color-cork);
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
@@ -182,8 +190,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  mix-blend-mode: multiply;
-  opacity: 0.88;
+  opacity: 0.85;
 }
 
 /* Yellow crime-scene tape. */
@@ -255,10 +262,6 @@ body {
   from { transform: scale(1.08) translate(0, 0); }
   to { transform: scale(1.16) translate(-2%, -1.5%); }
 }
-@keyframes lamp {
-  from { transform: translateX(-12%); opacity: 0.6; }
-  to { transform: translateX(12%); opacity: 1; }
-}
 @keyframes blink {
   50% { opacity: 0.25; }
 }
@@ -286,18 +289,41 @@ body {
   --lift: -12px;
   outline: none;
 }
+/* Only transform and opacity animate (GPU-friendly); the deeper shadow and the dimming
+ * are pre-painted on pseudo-elements and simply fade in. */
 .fx-card .fx-body {
   transform: rotate(var(--rot));
-  transition:
-    transform 0.45s var(--ease-spring),
-    box-shadow 0.45s var(--ease-out-soft),
-    filter 0.35s ease,
-    opacity 0.35s ease;
+  position: relative;
+  transition: transform 0.5s var(--ease-out-soft);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.fx-card .fx-body::before,
+.fx-card .fx-body::after {
+  content: "";
+  position: absolute;
+  /* --fx-inset / --fx-radius: match the visible sheet when .fx-body has transparent padding. */
+  inset: var(--fx-inset, 0);
+  border-radius: var(--fx-radius, inherit);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.fx-card .fx-body::before {
+  z-index: -1;
+  box-shadow: var(--shadow-card-lift);
+}
+.fx-card .fx-body::after {
+  z-index: 30;
+  background: rgb(30 18 8 / 0.32);
 }
 .fx-card:hover .fx-body,
 .fx-card:focus-visible .fx-body {
   transform: translateY(var(--lift)) rotate(0deg) scale(1.03);
-  box-shadow: var(--shadow-card-lift);
+}
+.fx-card:hover .fx-body::before,
+.fx-card:focus-visible .fx-body::before {
+  opacity: 1;
 }
 .fx-card:focus-visible .fx-body {
   outline: 3px solid var(--color-focus);
@@ -305,19 +331,21 @@ body {
 }
 .fx-card:active .fx-body {
   transform: translateY(0) rotate(0deg) scale(0.98);
-  box-shadow: var(--shadow-card);
   transition-duration: 0.08s;
 }
 /* While one piece of evidence is examined, the rest fall into shadow. */
 .fx-grid:has(.fx-card:hover) .fx-card:not(:hover) .fx-body {
-  filter: brightness(0.72) saturate(0.6);
   transform: rotate(var(--rot)) scale(0.97);
+}
+.fx-grid:has(.fx-card:hover) .fx-card:not(:hover) .fx-body::after {
+  opacity: 1;
 }
 
 /* Old photo: sepia at rest, full color when examined. */
 .fx-card .fx-photo {
   filter: sepia(0.55) contrast(1.05) brightness(0.95);
-  transition: filter 0.6s ease, transform 0.8s var(--ease-out-soft);
+  transition: filter 0.5s ease, transform 0.8s var(--ease-out-soft);
+  will-change: filter, transform;
 }
 .fx-card:hover .fx-photo,
 .fx-card:focus-visible .fx-photo {
@@ -359,13 +387,12 @@ body {
 
 /* Call-to-action strip turns to red ink. */
 .fx-card .fx-cta {
-  transition: background-color 0.25s ease, color 0.25s ease, letter-spacing 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 .fx-card:hover .fx-cta,
 .fx-card:focus-visible .fx-cta {
   background-color: var(--color-pink);
   color: var(--color-on-dark);
-  letter-spacing: 0.22em;
 }
 .fx-card .fx-arrow {
   transition: transform 0.35s var(--ease-spring);
@@ -376,13 +403,25 @@ body {
 
 /* Calmer hover for dashboard sheets: lift a little off the board. */
 .fx-tile {
-  transition:
-    transform 0.35s var(--ease-spring),
-    box-shadow 0.35s var(--ease-out-soft);
+  isolation: isolate;
+  transition: transform 0.4s var(--ease-out-soft);
+}
+.fx-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--shadow-card-hover);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 .fx-tile:hover {
   transform: translateY(-4px) rotate(var(--tile-rot, 0deg));
-  box-shadow: var(--shadow-card-hover);
+}
+.fx-tile:hover::after {
+  opacity: 1;
 }
 
 /* Bar that grows from the left when it first appears and on every change. */
@@ -397,7 +436,6 @@ dialog[open] {
 }
 dialog[open]::backdrop {
   animation: fade 0.25s ease-out both;
-  backdrop-filter: blur(3px) sepia(0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -105,7 +105,7 @@ export function ResultsView({ results }: { results: Results }) {
                   key={b.bilik_id}
                   data-testid={`booth-${b.label}`}
                   style={{ rotate: `${i % 2 ? 1.5 : -1.5}deg` }}
-                  className="group drop-shadow-[1px_3px_3px_rgb(40_25_10/0.45)] transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
+                  className="group drop-shadow-[1px_3px_3px_rgb(40_25_10/0.45)] will-change-transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
                 >
                   <div className="stamp-edge bg-surface">
                     <div className="relative flex flex-col gap-1 border border-ink/30 bg-paper px-2 py-2">

@@ -99,7 +99,12 @@ function CaseFile({
   icon,
   index,
 }: (typeof ROLES)[number] & { index: number }) {
-  const style = { "--rot": rot, "--lift": "-10px", animationDelay: `${250 + index * 150}ms` } as CSSProperties;
+  const style = {
+    "--rot": rot,
+    "--lift": "-10px",
+    "--fx-inset": "2rem 0 0 0",
+    "--fx-radius": "var(--radius-modal)",
+    animationDelay: `${250 + index * 150}ms` } as CSSProperties;
   return (
     <Link href={href} style={style} className="fx-card group relative block animate-drop">
       <div className="fx-body relative pt-8">
@@ -131,12 +136,13 @@ function CaseFile({
 }
 
 // Old photos, maps and newspapers on a desk, slowly drifting under a warm lamp.
+// The lamp glow is static: animating a full-screen translucent layer stuttered on weak laptops.
 function Backdrop() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-frame">
-      <div className="absolute inset-0 animate-fade bg-[url('/bg/papan-detektif.webp')] bg-cover bg-center [animation:fade_1.2s_ease-out_both,drift_40s_ease-in-out_infinite_alternate]" />
+      <div className="absolute inset-0 animate-fade bg-[url('/bg/papan-detektif.webp')] will-change-transform bg-cover bg-center [animation:fade_1.2s_ease-out_both,drift_40s_ease-in-out_infinite_alternate]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgb(43_29_18/0.15)_0%,rgb(43_29_18/0.55)_60%,rgb(20_12_6/0.9)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgb(255_220_160/0.12)_45%,transparent_60%)] [animation:lamp_9s_ease-in-out_infinite_alternate]" />
+      <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgb(255_220_160/0.12)_45%,transparent_60%)]" />
     </div>
   );
 }
@@ -188,7 +194,7 @@ function Decorations() {
 
 function MagnifierProp() {
   return (
-    <svg viewBox="0 0 120 120" className="w-full drop-shadow-[3px_6px_6px_rgb(30_18_8/0.5)] [animation:swing_5s_ease-in-out_infinite]">
+    <svg viewBox="0 0 120 120" className="w-full will-change-transform drop-shadow-[3px_6px_6px_rgb(30_18_8/0.5)] [animation:swing_5s_ease-in-out_infinite]">
       <circle cx="48" cy="48" r="34" fill="rgb(220 235 240 / 0.35)" stroke="var(--color-brass)" strokeWidth="9" />
       <path d="M72 72l34 34" stroke="var(--color-surface-dark)" strokeWidth="14" strokeLinecap="round" />
       <path d="M30 34a22 22 0 0 1 16-12" stroke="white" strokeOpacity="0.7" strokeWidth="4" strokeLinecap="round" fill="none" />
