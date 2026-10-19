@@ -162,15 +162,6 @@ function Decorations() {
       ),
     },
     {
-      className: "right-[5%] top-[10%] w-40 rotate-6",
-      delay: "450ms",
-      node: (
-        <div className="paper-ruled px-4 py-3 font-hand text-xl font-bold leading-tight text-blue">
-          Siapa ketua OSIS berikutnya??
-        </div>
-      ),
-    },
-    {
       className: "bottom-[8%] left-[6%] w-44 rotate-3",
       delay: "600ms",
       node: <span className="rubber-stamp block -rotate-12 px-3 py-1 text-center text-lg">Top secret</span>,

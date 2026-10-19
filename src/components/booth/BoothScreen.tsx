@@ -10,6 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { PaperClip } from "@/components/ui/PaperClip";
 import { accentStyle } from "@/lib/accent";
 import { authorizeRealtime, getBrowserClient } from "@/lib/supabase/browser";
+import { playVoteSound, primeVoteSound } from "@/lib/vote-sound";
 import type { Candidate, ElectionState } from "@/lib/types";
 import { RETRYABLE, VOTE_ERROR_TEXT, classifyVoteError, type VoteErrorKind } from "@/lib/vote-errors";
 
@@ -83,6 +84,8 @@ export function BoothScreen({
   const send = useCallback(async (candidate: Candidate, submissionId: string) => {
     if (sendingRef.current) return;
     sendingRef.current = true;
+    // Still inside the click, so the browser lets us unlock audio for the chime.
+    primeVoteSound();
     setPhase({ kind: "sending", candidate, submissionId });
     try {
       const { error } = await getBrowserClient().rpc("cast_vote", {
@@ -92,6 +95,8 @@ export function BoothScreen({
       if (error) {
         setPhase({ kind: "error", candidate, submissionId, error: classifyVoteError(error.message) });
       } else {
+        // Only after the vote is confirmed recorded, like the thank-you screen.
+        playVoteSound();
         setPhase({ kind: "thanks" });
       }
     } catch (error) {
