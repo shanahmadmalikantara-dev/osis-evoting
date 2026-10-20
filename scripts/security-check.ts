@@ -98,7 +98,7 @@ async function main() {
   await deleteTestUsers();
   const admin = await createTestUser("admin", "admin");
   const booths: TestUser[] = [];
-  for (let i = 1; i <= 5; i++) booths.push(await createTestUser(`bilik${i}`, "bilik"));
+  for (let i = 1; i <= 8; i++) booths.push(await createTestUser(`bilik${i}`, "bilik"));
   const anon = createClient(SUPABASE_URL, ANON_KEY, { auth: { persistSession: false } });
 
   const { data: candidateRows } = await service.from("candidates").select("id").order("nomor_urut");
@@ -188,7 +188,7 @@ async function main() {
       assert(del.error, "DELETE berhasil");
     });
 
-    await check("Simulasi 5 bilik bergantian, hitung ulang cocok", async () => {
+    await check("Simulasi 8 bilik bergantian, hitung ulang cocok", async () => {
       await sleep(8_500); // cooldown from the previous checks
       const before = (await admin.client.rpc("get_results")).data as Results;
       const expected = new Map(before.candidates.map((c) => [c.id, c.votes]));

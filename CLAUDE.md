@@ -9,7 +9,7 @@ Project rules. Read this before every change.
 - Code, identifiers, and comments: English. Text shown in the UI: Indonesian.
 
 ## Context
-- Voting happens at school on 5 "booth" laptops; ~1300 voters (students, teachers, staff) queue and take turns.
+- Voting happens at school on 8 "booth" laptops; ~1300 voters (students, teachers, staff) queue and take turns.
 - Voter verification is done manually by officers outside the app. The app stores NO voter identity at all.
 - Priorities, in order: (1) one click = exactly one correctly recorded vote, (2) ballot secrecy, (3) simple and robust on election day.
 
@@ -19,7 +19,7 @@ Project rules. Read this before every change.
 
 ## Accounts
 - Supabase Auth, NO sign-up page. Accounts are created by a local script.
-- Role `admin`: 3 accounts (OSIS advisors). Role `bilik`: 5 accounts (one per laptop).
+- Role `admin`: 3 accounts (OSIS advisors). Role `bilik`: 8 accounts (one per laptop).
 - Role lives in `app_metadata.role`; checked on the server AND in RLS.
 - `scripts/create-users.ts` uses the service_role key from `.env.local` (LOCAL ONLY), creates the 8 accounts with strong random passwords, prints email+password ONCE in the terminal.
 
@@ -79,7 +79,7 @@ Project rules. Read this before every change.
 - Same `submission_id` sent twice -> only one vote recorded
 - Voting while status is draft or closed -> denied
 - Admin tries UPDATE/DELETE on `votes` -> denied
-- 5 booths voting alternately, then recount total and per-candidate -> matches
+- 8 booths voting alternately, then recount total and per-candidate -> matches
 
 ## Election-day doc (`docs/HARI-H.md`)
-Short non-technical steps: log in all 5 laptops the day before, open Chrome kiosk mode straight to `/bilik`, cast one test vote then clear test data with a safe procedure before real voting, how to open/close voting, how to export results, what to do if a laptop or the internet fails.
+Short non-technical steps: log in all 8 laptops the day before, open Chrome kiosk mode straight to `/bilik`, cast one test vote then clear test data with a safe procedure before real voting, how to open/close voting, how to export results, what to do if a laptop or the internet fails.

@@ -13,7 +13,7 @@ Proyek Supabase gratis **otomatis dijeda kalau 7 hari tidak dipakai**. Buka supa
 ### 2. Cek paslon
 Login admin di `ALAMAT/admin/login`, buka menu **Paslon**, lalu pastikan nama, nomor urut, dan foto sudah benar. Paslon **terkunci** begitu voting dibuka.
 
-### 3. Siapkan 5 laptop bilik
+### 3. Siapkan 8 laptop bilik
 Lakukan di **setiap** laptop:
 
 1. Colokkan charger. Matikan mode tidur: *Settings → System → Power → Sleep: Never*.
@@ -45,7 +45,7 @@ Login bilik bertahan berhari-hari, jadi tidak perlu login ulang besok pagi.
 ### Membuka voting
 1. Pastikan dashboard berstatus **Draft** dengan total **0**.
 2. Klik **Buka voting**, baca peringatannya, lalu klik **Ya, buka voting**.
-3. Kelima bilik otomatis menampilkan kartu paslon dalam beberapa detik.
+3. Kedelapan bilik otomatis menampilkan kartu paslon dalam beberapa detik.
 
 > Setelah dibuka, voting **tidak bisa** dikembalikan ke draft dan suara **tidak bisa** dihapus. Itu disengaja demi keamanan.
 

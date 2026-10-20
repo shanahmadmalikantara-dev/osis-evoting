@@ -63,7 +63,7 @@ APP_URL=https://osis-evoting.vercel.app npm run test:security
 
 (Di Windows PowerShell: `$env:APP_URL="https://osis-evoting.vercel.app"; npm run test:security`)
 
-Skrip ini membuat akun uji sementara, lalu mengecek semua aturan keamanan (bilik tidak bisa membaca suara, batas kirim, anti dobel, admin tidak bisa ubah atau hapus suara, simulasi 5 bilik). Semua dijalankan di dalam Mode Uji Coba, lalu dibersihkan lagi. Semua baris harus ✓.
+Skrip ini membuat akun uji sementara, lalu mengecek semua aturan keamanan (bilik tidak bisa membaca suara, batas kirim, anti dobel, admin tidak bisa ubah atau hapus suara, simulasi 8 bilik). Semua dijalankan di dalam Mode Uji Coba, lalu dibersihkan lagi. Semua baris harus ✓.
 
 ## Mengubah tampilan
 

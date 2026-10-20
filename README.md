@@ -1,6 +1,6 @@
 # E-Voting Ketua & Wakil Ketua OSIS MAN 4 Jakarta
 
-Aplikasi pemungutan suara untuk 5 laptop bilik dan ±1300 pemilih. Aplikasi **tidak menyimpan identitas pemilih**.
+Aplikasi pemungutan suara untuk 8 laptop bilik dan ±1300 pemilih. Aplikasi **tidak menyimpan identitas pemilih**.
 Prioritasnya: (1) satu klik satu suara tercatat benar, (2) rahasia pilihan, (3) sederhana dan tahan banting di hari-H.
 
 - Aturan proyek: [CLAUDE.md](CLAUDE.md)
@@ -67,7 +67,7 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | submission_id sama dua kali → satu suara | ✓ | ✓ (respons hilang + coba lagi) | ✓ |
 | Voting saat draft / closed → ditolak | ✓ / ✓ | layar "belum dibuka" / "sudah ditutup" | ✓ / – |
 | Admin UPDATE/DELETE votes → ditolak | ✓ | | ✓ |
-| Simulasi 5 bilik lalu hitung ulang → cocok | ✓ | | ✓ |
+| Simulasi 8 bilik lalu hitung ulang → cocok | ✓ | | ✓ |
 
 ## Keputusan teknis
 
@@ -78,7 +78,7 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | Trigger database menolak UPDATE, DELETE, dan TRUNCATE pada suara sungguhan, **termasuk** oleh service_role. | Lapisan pengaman kedua di luar RLS, misalnya kalau ada yang salah klik di dashboard Supabase. |
 | Admin **tidak** membaca baris `votes` langsung, hanya angka gabungan lewat `get_results()`. | Rahasia pilihan: baris suara punya waktu dan bilik. Kalau digabung dengan antrean, bisa ditebak siapa memilih apa. |
 | Dashboard live berlangganan tabel `results_version` (penghitung), lalu memanggil `get_results()`. | Realtime butuh izin SELECT, dan kita tidak mau memberi admin SELECT pada `votes`. |
-| Jeda antar-suara per bilik disimpan di `election.vote_cooldown_seconds` (default 8). | Hanya pemilik database yang bisa mengubahnya. Tes memakai 0 supaya simulasi 5 bilik cepat. |
+| Jeda antar-suara per bilik disimpan di `election.vote_cooldown_seconds` (default 8). | Hanya pemilik database yang bisa mengubahnya. Tes memakai 0 supaya simulasi 8 bilik cepat. |
 | `cast_vote` mengunci per bilik (`pg_advisory_xact_lock`). | Supaya dua klik bersamaan tidak lolos dari batas 8 detik. |
 | Kirim ulang dengan `submission_id` yang sama dianggap sukses (`duplicate: true`) tanpa menambah suara. | Kalau jaringan putus setelah suara tersimpan, tombol "Coba lagi" aman ditekan. |
 | Foto paslon disimpan di bucket publik `candidate-photos`. Hanya admin yang boleh upload, dan hanya saat `draft`. | Foto paslon adalah materi kampanye publik. URL publik membuat bilik tetap cepat. |

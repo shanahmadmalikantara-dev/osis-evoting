@@ -46,7 +46,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
     db = await createFreshDatabase();
     admin = await createUser(db, "admin1", "admin");
     booths = [];
-    for (let i = 1; i <= 5; i++) booths.push(await createUser(db, `bilik${i}`, "bilik"));
+    for (let i = 1; i <= 8; i++) booths.push(await createUser(db, `bilik${i}`, "bilik"));
     anon = await createUser(db, "anon", "anon");
     noRole = await createUser(db, "norole", "none");
     candidates = await candidateIds(db);
@@ -62,7 +62,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
       const r = await results();
       expect(r.status).toBe("draft");
       expect(r.total).toBe(0);
-      expect(r.booths.map((b) => b.label)).toEqual(["bilik1", "bilik2", "bilik3", "bilik4", "bilik5"]);
+      expect(r.booths.map((b) => b.label)).toEqual(["bilik1", "bilik2", "bilik3", "bilik4", "bilik5", "bilik6", "bilik7", "bilik8"]);
     });
 
     it("rejects votes while the election is a draft", async () => {
@@ -267,15 +267,15 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
       expect(err).toMatch("candidates_locked");
     });
 
-    it("5 booths voting in turns: recount matches the dashboard totals", async () => {
+    it("8 booths voting in turns: recount matches the dashboard totals", async () => {
       await setCooldown(db, 0);
       const before = await results();
       const expected = new Map(before.candidates.map((c) => [c.id, c.votes]));
       const perBooth = new Map(before.booths.map((b) => [b.label, b.votes]));
 
-      // 60 votes: each round, every booth votes once, cycling through candidates.
+      // 96 votes: each round, every booth votes once, cycling through candidates.
       for (let round = 0; round < 12; round++) {
-        for (let b = 0; b < 5; b++) {
+        for (let b = 0; b < booths.length; b++) {
           const candidate = candidates[(round * 5 + b * 3) % 4];
           await castVote(booths[b], candidate);
           expected.set(candidate, (expected.get(candidate) ?? 0) + 1);
@@ -284,7 +284,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
       }
 
       const after = await results();
-      expect(after.total).toBe(before.total + 60);
+      expect(after.total).toBe(before.total + 12 * booths.length);
       for (const c of after.candidates) expect(c.votes).toBe(expected.get(c.id));
       for (const b of after.booths) expect(b.votes).toBe(perBooth.get(b.label));
 
