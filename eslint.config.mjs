@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Offline backup app: own build (Vite + Tauri), see backup-app/README.md.
+    "backup-app/**",
   ]),
 ]);
 

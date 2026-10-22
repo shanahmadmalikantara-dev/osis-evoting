@@ -32,6 +32,8 @@ Project rules. Read this before every change.
    - On send failure (network): show error + retry button; NEVER show "Terima kasih".
    - No menu, no logout button, no links to other pages.
    - If election status is not `open`: show "Pemungutan suara belum dibuka / sudah ditutup".
+   - Owner decision (22 Oct 2026): a small corner button "Aplikasi cadangan" downloads the offline Windows backup app (`backup-app/`) after a confirmation popup.
+4. Backup app (`backup-app/`, Tauri, Windows): offline booth using the same booth UI; votes stored only on that laptop; officer PIN; results printed as a signed tally sheet and added MANUALLY to the final count (never imported into the database).
 3. `/admin/login` then `/admin` (role admin only)
    - LIVE dashboard (Supabase Realtime, polling as fallback): total votes, votes + % per candidate, bar chart, votes per booth.
    - Open / Close voting buttons with confirmation.

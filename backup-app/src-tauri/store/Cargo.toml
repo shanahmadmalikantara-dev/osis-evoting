@@ -1,0 +1,11 @@
+[package]
+name = "voting-store"
+version = "1.0.0"
+edition = "2021"
+description = "Local, append-only vote storage for the offline backup booth (no Tauri dependency, unit tested on any OS)."
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+getrandom = "0.2"

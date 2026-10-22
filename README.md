@@ -70,6 +70,24 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | Admin UPDATE/DELETE votes → ditolak | ✓ | | ✓ |
 | Simulasi 8 bilik lalu hitung ulang → cocok | ✓ | | ✓ |
 
+## Aplikasi cadangan (Windows, offline)
+
+Folder `backup-app/` berisi bilik suara cadangan untuk Windows (Tauri + React). Dipakai kalau internet atau website mati. Panduan pemakaian ada di `docs/HARI-H.md`.
+
+- Tampilan bilik (kartu, konfirmasi, bunyi, layar terima kasih) diambil langsung dari `src/components/booth/BoothParts.tsx` dan `CandidateCard.tsx`, jadi selalu sama dengan website.
+- Data paslon (dengan foto) diambil sekali dari `GET /api/cadangan/paslon` saat H-1, lalu disimpan di laptop.
+- Suara ditulis ke `votes.jsonl` di `%APPDATA%\id.sch.man4jakarta.pemiluosis.cadangan` dan di-*flush* ke disk sebelum layar "Terima kasih". Tidak ada identitas pemilih atau jam.
+- PIN petugas (disimpan sebagai hash) untuk buka/tutup, hasil, ekspor, dan hapus. Salah 5 kali → terkunci 1 menit.
+- Hasil cadangan **tidak** diimpor ke database; dicetak sebagai berita acara dan dijumlahkan manual.
+
+```bash
+cd backup-app && npm install
+npm run dev                                   # coba di browser (data di localStorage)
+cd src-tauri/store && cargo test              # tes penyimpanan suara
+cd backup-app && cargo tauri build --target x86_64-pc-windows-gnu   # installer .exe (butuh mingw-w64 + nsis)
+cp src-tauri/target/x86_64-pc-windows-gnu/release/bundle/nsis/*.exe ../public/unduh/Pemilu-OSIS-Cadangan-Setup.exe
+```
+
 ## Keputusan teknis
 
 | Keputusan | Alasan |
@@ -77,6 +95,10 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | **Mode Uji Coba**: suara uji ditandai `is_test`, dihapus saat uji diakhiri, status kembali `draft`. | Spesifikasi minta "tidak ada hapus suara" sekaligus "tes lalu hapus data uji". Suara sungguhan tidak pernah bisa dihapus. |
 | Alur status satu arah: `draft → open → closed`. Hanya mode uji yang boleh kembali ke `draft`. | Mencegah reset hasil setelah voting sungguhan dimulai. |
 | Setelah voting **ditutup**, admin bisa menghapus semua suara dari dashboard (`reset_election`, wajib ketik `HAPUS SEMUA SUARA`), status kembali `draft`. | Permintaan Ahmad (22 Okt 2026) supaya aplikasi bisa dipakai lagi. Dibatasi ke status `closed` supaya tidak bisa dipakai saat voting berjalan; tercatat di audit log. Konsekuensi: siapa pun yang tahu password admin bisa menghapus hasil setelah ditutup, jadi ekspor CSV/PDF dulu. |
+| Aplikasi cadangan Windows memakai **Tauri** (installer NSIS, dipasang per pengguna tanpa hak admin). | Ukurannya kecil karena memakai WebView2 bawaan Windows, bukan Chromium sendiri seperti Electron. |
+| Hasil bilik cadangan digabung **manual** lewat berita acara bertanda tangan, bukan diimpor ke database. | Pilihan Ahmad (22 Okt 2026). Kalau ada fitur impor, siapa pun yang tahu password admin bisa memasukkan suara palsu lewat file. |
+| Tombol kecil "Aplikasi cadangan" di pojok layar bilik, link unduh hanya ada di dalam popup konfirmasi. | Pilihan Ahmad (22 Okt 2026). Satu klik tidak sengaja dari pemilih tidak langsung mengunduh. |
+| `GET /api/cadangan/paslon` publik (tanpa login, CORS terbuka) dan hanya berisi data paslon. | Aplikasi cadangan belum punya akun. Nama, nomor, foto, dan visi-misi paslon memang materi kampanye publik; tidak ada suara atau status pemilihan di sini. |
 | Trigger database menolak UPDATE, DELETE, dan TRUNCATE pada suara sungguhan, **termasuk** oleh service_role (kecuali di dalam `reset_election`). | Lapisan pengaman kedua di luar RLS, misalnya kalau ada yang salah klik di dashboard Supabase. |
 | Admin **tidak** membaca baris `votes` langsung, hanya angka gabungan lewat `get_results()`. | Rahasia pilihan: baris suara punya waktu dan bilik. Kalau digabung dengan antrean, bisa ditebak siapa memilih apa. |
 | Dashboard live berlangganan tabel `results_version` (penghitung), lalu memanggil `get_results()`. | Realtime butuh izin SELECT, dan kita tidak mau memberi admin SELECT pada `votes`. |

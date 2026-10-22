@@ -1,0 +1,26 @@
+{
+  "name": "pemilu-osis-cadangan",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Offline backup voting app for Windows (Tauri). React, Tailwind and the shared booth UI come from the main app in ../src.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "tauri": "cargo tauri",
+    "build:windows": "cargo tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc"
+  },
+  "dependencies": {
+    "@fontsource/caveat": "5.3.0",
+    "@fontsource/courier-prime": "5.3.0",
+    "@fontsource/lora": "5.3.0",
+    "@fontsource/playfair-display": "5.3.0",
+    "@fontsource/special-elite": "5.3.0",
+    "@tauri-apps/api": "2.12.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.5"
+  }
+}

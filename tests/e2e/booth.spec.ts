@@ -42,6 +42,17 @@ test.describe("booth", () => {
     await expect(page.getByRole("button", { name: /keluar|logout/i })).toHaveCount(0);
   });
 
+  test("corner button offers the backup app only after a confirmation", async ({ page }) => {
+    await openBooth(page);
+    await page.getByRole("button", { name: "Aplikasi cadangan" }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toContainText("Unduh aplikasi cadangan?");
+    await expect(dialog.getByRole("link", { name: "Ya, unduh" })).toHaveAttribute("href", "/unduh/Pemilu-OSIS-Cadangan-Setup.exe");
+    await dialog.getByRole("button", { name: "Batal" }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByRole("link")).toHaveCount(0);
+  });
+
   test("cancel closes the dialog without voting", async ({ page }) => {
     await openBooth(page);
     await card(page, 2).click();

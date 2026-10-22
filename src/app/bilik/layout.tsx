@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BackupDownload } from "@/components/booth/BackupDownload";
 import { KioskGuard } from "@/components/booth/KioskGuard";
 
 // Booth pages: no menu, no links, parchment background. KioskGuard blocks the right-click menu and text selection.
@@ -12,6 +13,7 @@ export default function BilikLayout({ children }: { children: ReactNode }) {
       </div>
       <KioskGuard />
       {children}
+      <BackupDownload />
     </div>
   );
 }

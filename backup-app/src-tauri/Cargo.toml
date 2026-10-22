@@ -1,0 +1,22 @@
+[package]
+name = "pemilu-osis-cadangan"
+version = "1.0.0"
+description = "Aplikasi voting cadangan Pemilu OSIS MAN 4 Jakarta (offline)"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+voting-store = { path = "store" }
+
+[profile.release]
+# Small installer: optimize for size, strip symbols.
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

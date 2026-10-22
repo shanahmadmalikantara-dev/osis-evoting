@@ -1,0 +1,45 @@
+/* Fonts are bundled (latin only) because the backup booth runs without internet. */
+@import "@fontsource/lora/latin-400.css";
+@import "@fontsource/lora/latin-700.css";
+@import "@fontsource/playfair-display/latin-700.css";
+@import "@fontsource/playfair-display/latin-900.css";
+@import "@fontsource/caveat/latin-500.css";
+@import "@fontsource/caveat/latin-700.css";
+@import "@fontsource/courier-prime/latin-400.css";
+@import "@fontsource/courier-prime/latin-700.css";
+@import "@fontsource/special-elite/latin-400.css";
+
+/* Same design tokens and materials as the website. */
+@import "../../src/app/globals.css";
+@source "../../src/components/booth";
+@source "../../src/components/ui";
+
+:root {
+  --font-body: "Lora";
+  --font-headline: "Playfair Display";
+  --font-handwriting: "Caveat";
+  --font-label: "Courier Prime";
+  --font-typewriter: "Special Elite";
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* The printed report is plain black on white. */
+@media print {
+  body::before,
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    background: #fff !important;
+    transform: none !important;
+  }
+}

@@ -38,6 +38,22 @@ Login bilik bertahan berhari-hari, jadi tidak perlu login ulang besok pagi.
 3. Di dashboard, angka **Per bilik** untuk setiap bilik harus bertambah 1.
 4. Klik **Akhiri uji coba**. Semua suara uji dibersihkan dan status kembali **Draft**. Ini satu-satunya cara aman menghapus data uji. Suara sungguhan tidak bisa dihapus selama voting berjalan.
 
+### 5. Pasang aplikasi cadangan (di setiap laptop bilik)
+Aplikasi ini dipakai **hanya kalau internet atau website bermasalah**. Pasang sekarang, karena saat internet mati aplikasi tidak bisa diunduh.
+
+1. Di layar bilik, klik tombol kecil **Aplikasi cadangan** di pojok kiri bawah, lalu **Ya, unduh**. (Bisa juga buka `ALAMAT/unduh/Pemilu-OSIS-Cadangan-Setup.exe`.)
+2. Buka file yang terunduh. Kalau Windows menampilkan *"Windows protected your PC"*, klik **More info** lalu **Run anyway**. Ini muncul karena aplikasinya buatan sendiri, bukan dari toko aplikasi.
+3. Ikuti langkah pemasangan sampai selesai. Muncul ikon **Pemilu OSIS Cadangan** di desktop.
+4. Buka aplikasinya (laptop **masih harus terhubung internet**), lalu:
+   - pilih **nomor bilik** laptop ini,
+   - klik **Ambil data paslon** dan pastikan semua paslon muncul,
+   - buat **PIN petugas** (4–8 angka). Pakai PIN yang sama di semua laptop supaya mudah, dan jangan beri tahu pemilih.
+5. Coba satu kali: klik **Petugas** (pojok kanan bawah) → masukkan PIN → **Buka voting cadangan** → **Kembali ke bilik** → pilih satu paslon.
+6. Bersihkan suara percobaan: **Petugas** → PIN → **Hapus suara di laptop ini** → ketik `HAPUS`. Status kembali **Belum dibuka**.
+7. Tutup aplikasinya: **Petugas** → PIN → **Tutup aplikasi**. Biarkan terpasang sampai hari-H.
+
+> Kalau paslon diubah setelah langkah ini, buka lagi aplikasinya saat masih ada internet: **Petugas** → PIN → **Perbarui data paslon**.
+
 ---
 
 ## Hari-H
@@ -77,6 +93,29 @@ Tombol ini tidak muncul saat draft, uji coba, atau voting dibuka.
 
 ---
 
+## Kalau website atau internet mati lama: pakai bilik cadangan
+
+Pakai cara ini kalau hotspot cadangan juga tidak bisa, atau website error terus.
+
+1. Pastikan **tidak ada kotak merah** yang masih menunggu di layar bilik. Kalau ada, ikuti baris "Laptop harus dimatikan saat masih ada kotak merah" di tabel bawah.
+2. Catat **jam** pindah ke cadangan dan **angka terakhir tiap bilik** di dashboard (kalau dashboard masih bisa dibuka).
+3. Tutup Chrome (Alt + F4), lalu buka ikon **Pemilu OSIS Cadangan** di desktop.
+4. Klik **Petugas** (pojok kanan bawah) → PIN → **Buka voting cadangan** → **Kembali ke bilik**. Pemilih memilih seperti biasa, ada bunyi "ting" dan layar "Terima kasih" yang sama.
+5. Suara disimpan **di laptop itu saja**, langsung ke file, jadi tetap aman walau laptop mati mendadak.
+
+Kalau internet sudah normal lagi, petugas boleh kembali ke website. Suara yang sudah masuk di aplikasi cadangan **tetap dihitung**.
+
+### Setelah voting selesai (hanya laptop yang memakai cadangan)
+1. Di aplikasi cadangan: **Petugas** → PIN → **Tutup voting cadangan**.
+2. Klik **Lihat hasil & cetak berita acara** → **Cetak / Simpan PDF**. Untuk file PDF, pilih printer **Microsoft Print to PDF**.
+3. Petugas bilik, 2 saksi, dan pembina menandatangani berita acara itu.
+4. Klik juga **Simpan file rekap (CSV)**. File tersimpan di folder *Documents → Pemilu OSIS Cadangan*.
+5. **Hasil akhir = hasil dari website + angka di berita acara semua bilik cadangan.** Tulis penjumlahannya di berita acara akhir.
+
+Angka cadangan **tidak** dimasukkan ke website, supaya tidak ada cara memasukkan suara lewat file.
+
+---
+
 ## Kalau ada masalah
 
 | Masalah | Yang dilakukan |
@@ -89,4 +128,6 @@ Tombol ini tidak muncul saat draft, uji coba, atau voting dibuka.
 | Laptop harus dimatikan saat masih ada kotak merah | Sebelum dimatikan, catat angka bilik itu di dashboard. Setelah laptop menyala lagi, kalau angkanya **sudah bertambah 1**, suara pemilih tadi sudah masuk. Kalau **belum**, pemilih boleh memilih ulang. |
 | Layar bilik "GAGAL MEMUAT" | Periksa internet, lalu tekan **Muat ulang**. |
 | Dashboard menulis "Koneksi terputus" | Angka tetap aman di database. Periksa internet laptop admin, nanti angkanya menyusul otomatis. |
+| Aplikasi cadangan: "Terlalu banyak PIN salah" | Tunggu 1 menit lalu coba lagi. |
+| Aplikasi cadangan: lupa PIN | Data suara tetap aman. Hubungi Ahmad: data ada di folder `%APPDATA%\id.sch.man4jakarta.pemiluosis.cadangan` (file `votes.jsonl`). |
 | Lupa password akun | Dari laptop yang punya `.env.local`, jalankan `npm run reset-password -- admin` (atau nama akun bilik, misalnya `bilik3`). Password baru tampil sekali. |
