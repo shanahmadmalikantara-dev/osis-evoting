@@ -1,13 +1,14 @@
 "use client";
 
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { runLifecycle, type LifecycleAction } from "@/app/admin/(panel)/actions";
+import { resetElection, runLifecycle, type LifecycleAction } from "@/app/admin/(panel)/actions";
 import { ResultsView } from "@/components/admin/ResultsView";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Notice } from "@/components/ui/Notice";
 import { Sticker, type StickerColor } from "@/components/ui/Sticker";
 import { adminErrorText } from "@/lib/admin-errors";
+import { RESET_PHRASE } from "@/lib/reset-phrase";
 import { authorizeRealtime, getBrowserClient } from "@/lib/supabase/browser";
 import type { Results } from "@/lib/types";
 
@@ -37,7 +38,7 @@ const CONFIRMATIONS: Record<LifecycleAction, Confirmation> = {
   open_voting: {
     action: "open_voting",
     title: "Buka pemungutan suara SUNGGUHAN?",
-    body: "Setelah dibuka, voting tidak bisa dikembalikan ke draft, suara tidak bisa dihapus, dan paslon tidak bisa diubah. Pastikan uji coba sudah selesai.",
+    body: "Setelah dibuka, voting tidak bisa dikembalikan ke draft dan paslon tidak bisa diubah. Suara baru bisa dihapus setelah voting ditutup. Pastikan uji coba sudah selesai.",
     confirmLabel: "Ya, buka voting",
     danger: true,
   },
@@ -185,6 +186,8 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
         </div>
       </section>
 
+      {results.status === "closed" ? <ResetSection onDone={(text) => setNotice({ tone: "success", text })} refresh={refresh} /> : null}
+
       <Modal open={confirming !== null} onClose={() => !busy && setConfirming(null)} labelledBy="lifecycle-title">
         {confirming ? (
           <div className="flex flex-col gap-5">
@@ -207,6 +210,92 @@ export function AdminDashboard({ initialResults }: { initialResults: Results }) 
         ) : null}
       </Modal>
     </div>
+  );
+}
+
+// Danger zone, only rendered after voting is closed: wipe every vote and return to draft.
+function ResetSection({ onDone, refresh }: { onDone: (message: string) => void; refresh: () => Promise<void> }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const matches = text.trim() === RESET_PHRASE;
+
+  function close() {
+    if (busy) return;
+    setOpen(false);
+    setText("");
+    setError(null);
+  }
+
+  async function submit() {
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await resetElection(text);
+      if (result.ok) {
+        setOpen(false);
+        setText("");
+        onDone(result.message ?? "Data suara dihapus.");
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError(adminErrorText((err as Error).message));
+    } finally {
+      setBusy(false);
+      await refresh();
+    }
+  }
+
+  return (
+    <section aria-labelledby="reset-title" className="paper relative flex flex-col gap-4 border-2 border-dashed border-pink p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-1">
+        <h2 id="reset-title" className="font-display text-2xl font-black">
+          Hapus data pemilihan
+        </h2>
+        <p className="font-type text-sm text-ink">
+          Menghapus SEMUA suara dan mengembalikan status ke draft supaya aplikasi bisa dipakai lagi. Ekspor CSV dan PDF dulu, karena
+          langkah ini tidak bisa dibatalkan.
+        </p>
+      </div>
+      <Button variant="danger" onClick={() => setOpen(true)}>
+        Hapus semua suara
+      </Button>
+
+      <Modal open={open} onClose={close} labelledBy="reset-modal-title">
+        <div className="flex flex-col gap-5">
+          <span className="rubber-stamp w-fit -rotate-3 px-2 py-0.5 text-xs">Tidak bisa dibatalkan</span>
+          <h2 id="reset-modal-title" className="font-display text-3xl font-black leading-tight sm:text-4xl">
+            Hapus semua data suara?
+          </h2>
+          <p className="font-type text-ink">
+            Semua suara akan hilang permanen dan status kembali ke draft. Sudah ekspor hasil (CSV dan PDF)? Kalau yakin, ketik{" "}
+            <strong className="font-mono">{RESET_PHRASE}</strong> di bawah.
+          </p>
+          <label className="flex flex-col gap-2">
+            <span className="font-type text-xs uppercase tracking-widest text-ink-soft">Ketik konfirmasi</span>
+            <input
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              disabled={busy}
+              className="rounded-sticker border-2 border-ink/40 bg-surface px-4 py-3 font-mono text-lg uppercase tracking-wider outline-none focus:border-pink"
+            />
+          </label>
+          {error ? <Notice tone="error">{error}</Notice> : null}
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="secondary" disabled={busy} onClick={close}>
+              Batal
+            </Button>
+            <Button variant="danger" disabled={busy || !matches} onClick={submit}>
+              {busy ? "Menghapus..." : "Hapus permanen"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </section>
   );
 }
 

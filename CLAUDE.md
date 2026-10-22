@@ -37,7 +37,7 @@ Project rules. Read this before every change.
    - Open / Close voting buttons with confirmation.
    - Manage candidates (names, photo, vision-mission) only while status is `draft`; photos via Supabase Storage.
    - Export results (CSV and PDF) and audit log of admin actions.
-   - NO feature to delete or reset votes.
+   - Votes cannot be deleted or reset, EXCEPT one owner-approved path (Ahmad, 22 Oct 2026): after status is `closed`, an admin can wipe all votes and return to `draft` via `reset_election(confirm phrase)` from the dashboard. Never allow it in any other status.
 
 ## Database (SQL migrations in `supabase/migrations`)
 - `candidates` (id, nomor_urut, nama_ketua, nama_wakil, foto_url, visi_misi)

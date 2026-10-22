@@ -36,7 +36,7 @@ export async function withDb<T>(fn: (db: Client) => Promise<T>): Promise<T> {
 }
 
 // TEST ONLY (local database): puts the election back into a known state and wipes votes.
-// Real deployments can never do this: the delete is only possible with triggers disabled by the owner.
+// Unlike the dashboard's reset (closed elections only), this works in any state; tests only.
 export async function resetElection(state: { status: "draft" | "open" | "closed"; testMode?: boolean }) {
   assertLocal();
   await withDb(async (db) => {

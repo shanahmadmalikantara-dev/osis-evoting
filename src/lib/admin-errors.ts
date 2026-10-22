@@ -5,6 +5,8 @@ const ADMIN_ERROR_TEXT: Record<string, string> = {
   no_candidates: "Belum ada paslon. Tambahkan paslon dulu.",
   votes_not_empty: "Masih ada suara tersimpan. Akhiri uji coba dulu.",
   candidates_locked: "Paslon hanya bisa diubah saat status draft.",
+  reset_only_when_closed: "Data suara hanya bisa dihapus setelah voting ditutup.",
+  reset_confirm_mismatch: "Tulisan konfirmasi tidak cocok. Ketik persis: HAPUS SEMUA SUARA",
 };
 
 export function adminErrorText(message: string | undefined): string {

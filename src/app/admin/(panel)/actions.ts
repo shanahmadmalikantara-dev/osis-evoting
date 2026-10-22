@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { adminErrorText } from "@/lib/admin-errors";
 import { requireRole } from "@/lib/auth";
+import { RESET_PHRASE } from "@/lib/reset-phrase";
 import { getServerClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; error: string };
@@ -23,4 +24,19 @@ export async function runLifecycle(action: LifecycleAction): Promise<ActionResul
     return { ok: true, message: `Uji coba selesai. ${deleted} suara uji dibersihkan.` };
   }
   return { ok: true };
+}
+
+// Wipes every vote after a CLOSED election and returns to draft. The database re-checks the role,
+// the status and the phrase; this check only gives a quicker message.
+export async function resetElection(confirmText: string): Promise<ActionResult> {
+  if (confirmText.trim() !== RESET_PHRASE) {
+    return { ok: false, error: adminErrorText("reset_confirm_mismatch") };
+  }
+  await requireRole("admin");
+  const supabase = await getServerClient();
+  const { data, error } = await supabase.rpc("reset_election", { p_confirm: RESET_PHRASE });
+  if (error) return { ok: false, error: adminErrorText(error.message) };
+  revalidatePath("/admin", "layout");
+  const deleted = (data as { deleted_votes?: number } | null)?.deleted_votes ?? 0;
+  return { ok: true, message: `${deleted} suara dihapus. Status kembali ke draft.` };
 }

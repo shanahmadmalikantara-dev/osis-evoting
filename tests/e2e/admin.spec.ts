@@ -76,6 +76,30 @@ test.describe("admin dashboard", () => {
     await expect(booth.getByRole("heading", { name: "SUDAH DITUTUP" })).toBeVisible({ timeout: 12_000 });
     await expect(admin.getByRole("button", { name: /buka voting|tutup voting/i })).toHaveCount(0);
     await expect(total(admin)).toHaveText("4");
+
+    // After closing, the admin can wipe everything, but only with the typed phrase.
+    await admin.getByRole("button", { name: "Hapus semua suara" }).click();
+    const dialog = admin.getByRole("dialog");
+    const wipe = dialog.getByRole("button", { name: "Hapus permanen" });
+    await expect(wipe).toBeDisabled();
+    await dialog.getByLabel("Ketik konfirmasi").fill("hapus");
+    await expect(wipe).toBeDisabled();
+    await dialog.getByLabel("Ketik konfirmasi").fill("HAPUS SEMUA SUARA");
+    await wipe.click();
+    await expect(dialog).toBeHidden();
+    await expect(admin.getByText("4 suara dihapus. Status kembali ke draft.")).toBeVisible();
+    await expect(admin.getByText("Draft", { exact: true })).toBeVisible();
+    await expect(total(admin)).toHaveText("0");
+    await expect(admin.getByRole("button", { name: "Hapus semua suara" })).toHaveCount(0);
+    await expect(booth.getByRole("heading", { name: "BELUM DIBUKA" })).toBeVisible({ timeout: 12_000 });
+  });
+
+  test("the wipe button only exists after voting is closed", async ({ browser }) => {
+    const admin = await adminPage(browser);
+    await expect(admin.getByRole("button", { name: "Hapus semua suara" })).toHaveCount(0);
+    await resetElection({ status: "open" });
+    await admin.reload();
+    await expect(admin.getByRole("button", { name: "Hapus semua suara" })).toHaveCount(0);
   });
 
   test("cancel in the confirm dialog changes nothing", async ({ browser }) => {

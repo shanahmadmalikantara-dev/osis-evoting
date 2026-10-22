@@ -36,7 +36,7 @@ Login bilik bertahan berhari-hari, jadi tidak perlu login ulang besok pagi.
 1. Di laptop admin, buka **Dashboard** lalu klik **Mulai uji coba**.
 2. Di setiap laptop bilik, layar akan berubah menjadi kartu paslon dengan pita pink **"MODE UJI COBA"**. Pilih satu paslon, lalu klik **Ya, kirim**. Harus muncul **"TERIMA KASIH"**.
 3. Di dashboard, angka **Per bilik** untuk setiap bilik harus bertambah 1.
-4. Klik **Akhiri uji coba**. Semua suara uji dibersihkan dan status kembali **Draft**. Ini satu-satunya cara aman menghapus data uji. Suara sungguhan tidak pernah bisa dihapus.
+4. Klik **Akhiri uji coba**. Semua suara uji dibersihkan dan status kembali **Draft**. Ini satu-satunya cara aman menghapus data uji. Suara sungguhan tidak bisa dihapus selama voting berjalan.
 
 ---
 
@@ -47,7 +47,7 @@ Login bilik bertahan berhari-hari, jadi tidak perlu login ulang besok pagi.
 2. Klik **Buka voting**, baca peringatannya, lalu klik **Ya, buka voting**.
 3. Kedelapan bilik otomatis menampilkan kartu paslon dalam beberapa detik.
 
-> Setelah dibuka, voting **tidak bisa** dikembalikan ke draft dan suara **tidak bisa** dihapus. Itu disengaja demi keamanan.
+> Setelah dibuka, voting **tidak bisa** dikembalikan ke draft dan suara **tidak bisa** dihapus sampai voting ditutup. Itu disengaja demi keamanan.
 
 ### Selama voting
 - Petugas memverifikasi pemilih **di luar aplikasi** (daftar hadir), lalu mempersilakan masuk ke bilik.
@@ -66,6 +66,14 @@ Di dashboard, bagian **Ekspor hasil**:
 - **PDF** untuk dicetak. Ada kolom tanda tangan 3 saksi/pembina.
 
 File yang diekspor setelah voting ditutup diberi nama `...-AKHIR`. Kalau diekspor sebelum ditutup, namanya `...-SEMENTARA`. Setiap ekspor tercatat di **Audit log**.
+
+### Menghapus data setelah selesai (opsional)
+Lakukan **hanya** setelah hasil diumumkan dan file CSV + PDF sudah disimpan dan ditandatangani.
+1. Di dashboard (status **Ditutup**), klik **Hapus semua suara** di kotak bergaris merah paling bawah.
+2. Ketik persis `HAPUS SEMUA SUARA`, lalu klik **Hapus permanen**.
+3. Semua suara hilang permanen dan status kembali **Draft**. Paslon dan akun tidak berubah. Kejadian ini tercatat di **Audit log**.
+
+Tombol ini tidak muncul saat draft, uji coba, atau voting dibuka.
 
 ---
 

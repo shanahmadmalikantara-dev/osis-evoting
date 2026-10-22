@@ -39,6 +39,9 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
 
   const results = () => call(admin, "get_results") as Promise<Results>;
 
+  const reset = (actor: Actor, phrase: string) =>
+    as(db, actor, async () => (await db.query("select public.reset_election($1) as r", [phrase])).rows[0].r);
+
   const voteCount = async () =>
     Number((await db.query("select count(*) from public.votes")).rows[0].count);
 
@@ -260,6 +263,18 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
       expect(await errorOf(db.query("truncate public.votes"))).toMatch("votes_are_immutable");
     });
 
+    it("votes cannot be wiped while voting is open, not even by an admin who sets the reset flag", async () => {
+      expect(await errorOf(reset(admin, "HAPUS SEMUA SUARA"))).toMatch("reset_only_when_closed");
+      expect(
+        await errorOf(
+          as(db, admin, async () => {
+            await db.query("select set_config('app.reset_election', 'on', true)");
+            await db.query("delete from public.votes");
+          }),
+        ),
+      ).toMatch("permission denied");
+    });
+
     it("candidates are locked during voting", async () => {
       const err = await errorOf(
         as(db, admin, () => db.query("delete from public.candidates where nomor_urut = 4")),
@@ -328,6 +343,35 @@ describe.skipIf(!TEST_DATABASE_URL)("database: voting rules", () => {
           "Menutup pemungutan suara",
         ]),
       );
+    });
+
+    it("reset after closing: only an admin, only with the exact phrase", async () => {
+      expect(await errorOf(reset(booths[0], "HAPUS SEMUA SUARA"))).toMatch("not_admin");
+      expect(await errorOf(reset(anon, "HAPUS SEMUA SUARA"))).toMatch(/permission denied|not_admin/);
+      expect(await errorOf(reset(admin, "hapus"))).toMatch("reset_confirm_mismatch");
+      expect(await voteCount()).toBeGreaterThan(0);
+    });
+
+    it("reset wipes every vote, returns to draft, is audited, and the app can run a new election", async () => {
+      const before = await voteCount();
+      const r = (await reset(admin, "HAPUS SEMUA SUARA")) as { deleted_votes: number };
+      expect(r.deleted_votes).toBe(before);
+      expect(await voteCount()).toBe(0);
+
+      const after = await results();
+      expect(after.status).toBe("draft");
+      expect(after.total).toBe(0);
+
+      const audit = await as(db, admin, async () =>
+        (await db.query("select aksi from public.audit_logs order by id desc limit 1")).rows[0].aksi as string,
+      );
+      expect(audit).toBe(`Menghapus semua data suara (${before} suara) dan mengembalikan status ke draft`);
+
+      // Outside reset_election() real votes are immutable again.
+      await call(admin, "open_voting");
+      await setCooldown(db, 0);
+      await castVote(booths[0], candidates[0]);
+      expect(await errorOf(db.query("delete from public.votes"))).toMatch("votes_are_immutable");
     });
   });
 });

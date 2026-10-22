@@ -76,7 +76,8 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 |---|---|
 | **Mode Uji Coba**: suara uji ditandai `is_test`, dihapus saat uji diakhiri, status kembali `draft`. | Spesifikasi minta "tidak ada hapus suara" sekaligus "tes lalu hapus data uji". Suara sungguhan tidak pernah bisa dihapus. |
 | Alur status satu arah: `draft → open → closed`. Hanya mode uji yang boleh kembali ke `draft`. | Mencegah reset hasil setelah voting sungguhan dimulai. |
-| Trigger database menolak UPDATE, DELETE, dan TRUNCATE pada suara sungguhan, **termasuk** oleh service_role. | Lapisan pengaman kedua di luar RLS, misalnya kalau ada yang salah klik di dashboard Supabase. |
+| Setelah voting **ditutup**, admin bisa menghapus semua suara dari dashboard (`reset_election`, wajib ketik `HAPUS SEMUA SUARA`), status kembali `draft`. | Permintaan Ahmad (22 Okt 2026) supaya aplikasi bisa dipakai lagi. Dibatasi ke status `closed` supaya tidak bisa dipakai saat voting berjalan; tercatat di audit log. Konsekuensi: siapa pun yang tahu password admin bisa menghapus hasil setelah ditutup, jadi ekspor CSV/PDF dulu. |
+| Trigger database menolak UPDATE, DELETE, dan TRUNCATE pada suara sungguhan, **termasuk** oleh service_role (kecuali di dalam `reset_election`). | Lapisan pengaman kedua di luar RLS, misalnya kalau ada yang salah klik di dashboard Supabase. |
 | Admin **tidak** membaca baris `votes` langsung, hanya angka gabungan lewat `get_results()`. | Rahasia pilihan: baris suara punya waktu dan bilik. Kalau digabung dengan antrean, bisa ditebak siapa memilih apa. |
 | Dashboard live berlangganan tabel `results_version` (penghitung), lalu memanggil `get_results()`. | Realtime butuh izin SELECT, dan kita tidak mau memberi admin SELECT pada `votes`. |
 | Jeda antar-suara per bilik disimpan di `election.vote_cooldown_seconds` (default 8). | Hanya pemilik database yang bisa mengubahnya. Tes memakai 0 supaya simulasi 8 bilik cepat. |
