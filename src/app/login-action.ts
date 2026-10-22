@@ -54,7 +54,7 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   const { data: claimsData } = await supabase.auth.getClaims();
   const role = roleFromClaims(claimsData?.claims);
   if (role !== expectedRole) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
     await recordLoginFailure(keys);
     return { error: `Akun ini bukan akun ${ROLE_LABEL[expectedRole]}.` };
   }
@@ -72,6 +72,8 @@ export async function logout(): Promise<void> {
   if (data?.claims?.email) {
     await getServiceClient().from("audit_logs").insert({ aktor: String(data.claims.email), aksi: "Logout" });
   }
-  await supabase.auth.signOut();
+  // Local scope: the admin account is shared by several laptops at once, so logging out
+  // on one must not end the sessions on the others.
+  await supabase.auth.signOut({ scope: "local" });
   redirect("/");
 }

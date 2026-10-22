@@ -22,7 +22,7 @@ Prioritasnya: (1) satu klik satu suara tercatat benar, (2) rahasia pilihan, (3) 
 ```bash
 npm install
 cp .env.example .env.local      # isi nilainya (lihat docs/DEPLOY.md)
-npm run setup                   # pasang database + paslon dummy + 8 akun (sekali saja)
+npm run setup                   # pasang database + paslon dummy + akun admin & 8 bilik (sekali saja)
 npm run dev                     # jalankan di http://localhost:3000
 
 npm run check                   # typecheck + lint + tes database
@@ -30,6 +30,7 @@ npm run test:e2e                # tes browser (butuh Supabase lokal, lihat di ba
 npm run test:security           # uji keamanan ke proyek asli (hanya saat status draft)
 npm run create-users            # buat akun yang belum ada
 npm run reset-password -- bilik3   # password baru untuk satu akun
+npm run master-admin            # satu akun admin bersama dengan password baru; admin lain dihapus
 ```
 
 ## Struktur
@@ -93,5 +94,6 @@ GitHub Actions menjalankan typecheck, lint, tes database, tes browser, dan uji k
 | PDF dibuat dengan `pdf-lib` dan font standar. | Ringan dan jalan di server Vercel tanpa browser. Karakter di luar Latin diganti `?` supaya ekspor tidak pernah gagal. |
 | Tampilan bertema papan bukti detektif (Sherlock Holmes): papan gabus, polaroid, benang merah, map berkas, cap karet. Semua warna dan font ada di `src/app/globals.css`, efek hover di kelas `fx-*`. | Permintaan Ahmad (13 Okt 2026) dengan gambar referensi. Fitur dan alur tidak berubah. |
 | Login dan logout admin/bilik juga dicatat di audit log. | Membantu menelusuri kejadian di hari-H. Catatan ini tidak terhubung ke suara. |
+| Hanya satu akun admin (`admin`) yang dipakai bersama di beberapa laptop; logout memakai `scope: "local"`. | Permintaan Ahmad (22 Okt 2026) supaya beberapa orang bisa memantau dashboard sekaligus. Logout di satu laptop tidak mengeluarkan laptop lain. Konsekuensinya audit log tidak bisa membedakan orang, dan 5 kali salah password di akun ini mengunci login baru selama 15 menit untuk semua orang (sesi yang sudah masuk tetap jalan). |
 | `npm run test:security` membuat akun uji sementara dan berjalan di dalam Mode Uji Coba. | Aman dijalankan ke proyek asli sebelum hari-H, tanpa meninggalkan data. Uji "voting saat closed" hanya ada di tes database karena menutup voting itu final. |
 | Pendaftaran akun publik dimatikan (config lokal + langkah manual di dashboard Supabase). | Spesifikasi: tidak ada halaman daftar. Akun tanpa role pun tidak punya akses, tapi lebih aman ditutup. |

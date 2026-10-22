@@ -1,4 +1,4 @@
-// LOCAL ONLY. Creates the 3 admin and 8 booth accounts with strong random passwords
+// LOCAL ONLY. Creates the shared admin account and the 8 booth accounts with strong random passwords
 // and prints them ONCE. Existing accounts are left untouched (their password is not shown again).
 //
 // Usage: npm run create-users
@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 
 const ACCOUNTS = [
-  ...[1, 2, 3].map((n) => ({ name: `admin${n}`, role: "admin" as const })),
+  { name: "admin", role: "admin" as const },
   ...[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({ name: `bilik${n}`, role: "bilik" as const })),
 ];
 

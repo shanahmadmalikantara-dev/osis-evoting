@@ -81,4 +81,4 @@ File yang diekspor setelah voting ditutup diberi nama `...-AKHIR`. Kalau diekspo
 | Laptop harus dimatikan saat masih ada kotak merah | Sebelum dimatikan, catat angka bilik itu di dashboard. Setelah laptop menyala lagi, kalau angkanya **sudah bertambah 1**, suara pemilih tadi sudah masuk. Kalau **belum**, pemilih boleh memilih ulang. |
 | Layar bilik "GAGAL MEMUAT" | Periksa internet, lalu tekan **Muat ulang**. |
 | Dashboard menulis "Koneksi terputus" | Angka tetap aman di database. Periksa internet laptop admin, nanti angkanya menyusul otomatis. |
-| Lupa password akun | Dari laptop yang punya `.env.local`, jalankan `npm run reset-password -- admin1` (ganti dengan nama akunnya). Password baru tampil sekali. |
+| Lupa password akun | Dari laptop yang punya `.env.local`, jalankan `npm run reset-password -- admin` (atau nama akun bilik, misalnya `bilik3`). Password baru tampil sekali. |

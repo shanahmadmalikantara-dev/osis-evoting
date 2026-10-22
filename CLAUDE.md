@@ -19,9 +19,9 @@ Project rules. Read this before every change.
 
 ## Accounts
 - Supabase Auth, NO sign-up page. Accounts are created by a local script.
-- Role `admin`: 3 accounts (OSIS advisors). Role `bilik`: 8 accounts (one per laptop).
+- Role `admin`: 1 shared account `admin`, used on several laptops at the same time (logout only ends that laptop's session). Role `bilik`: 8 accounts (one per laptop).
 - Role lives in `app_metadata.role`; checked on the server AND in RLS.
-- `scripts/create-users.ts` uses the service_role key from `.env.local` (LOCAL ONLY), creates the 8 accounts with strong random passwords, prints email+password ONCE in the terminal.
+- `scripts/create-users.ts` uses the service_role key from `.env.local` (LOCAL ONLY), creates the admin and 8 booth accounts with strong random passwords, prints email+password ONCE in the terminal.
 
 ## Pages
 1. `/` — two big buttons: "Lanjut sebagai Admin" and "Lanjut sebagai Penyuara".

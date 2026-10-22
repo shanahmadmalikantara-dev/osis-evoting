@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS } from "./fixtures";
+import { DOMAIN, E2E_USERS, withDb } from "./fixtures";
 import { alertBox as alert, login } from "./helpers";
 
 test("home shows the two entry buttons", async ({ page }) => {
@@ -49,4 +49,37 @@ test("login is blocked after 5 wrong passwords, even with the right one", async 
   }
   await login(page, "/bilik/login", E2E_USERS.locked.username);
   await expect(alert(page)).toContainText("Terlalu banyak percobaan");
+});
+
+test("one admin account works on two laptops; logging out on one keeps the other in", async ({ browser }) => {
+  const laptopA = await browser.newContext();
+  const laptopB = await browser.newContext();
+  const a = await laptopA.newPage();
+  const b = await laptopB.newPage();
+
+  await login(a, "/admin/login", E2E_USERS.admin.username);
+  await expect(a).toHaveURL(/\/admin$/);
+  await login(b, "/admin/login", E2E_USERS.admin.username);
+  await expect(b).toHaveURL(/\/admin$/);
+
+  await a.getByRole("button", { name: "Keluar" }).click();
+  await expect(a).toHaveURL(/\/$/);
+
+  await b.goto("/admin");
+  await expect(b).toHaveURL(/\/admin$/);
+  await expect(b.getByTestId("total-votes")).toBeVisible();
+
+  // Laptop B's session must still exist server-side, or it would be kicked out at the next
+  // token refresh (a page check alone passes until the access token expires).
+  const sessions = await withDb(async (db) => {
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from auth.sessions s join auth.users u on u.id = s.user_id where u.email = $1",
+      [`${E2E_USERS.admin.username}@${DOMAIN}`],
+    );
+    return rows[0].n;
+  });
+  expect(sessions).toBeGreaterThanOrEqual(1);
+
+  await laptopA.close();
+  await laptopB.close();
 });

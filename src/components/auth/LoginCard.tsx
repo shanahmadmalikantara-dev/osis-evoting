@@ -37,7 +37,7 @@ export function LoginCard({ role }: { role: AppRole }) {
                   : "Dilakukan petugas sekali saja, sehari sebelum hari-H."}
               </p>
             </div>
-            <LoginForm role={role} usernameHint={isAdmin ? "admin1" : "bilik1"} />
+            <LoginForm role={role} usernameHint={isAdmin ? "admin" : "bilik1"} />
           </div>
         </div>
       </div>
