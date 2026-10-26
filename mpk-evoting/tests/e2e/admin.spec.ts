@@ -103,7 +103,7 @@ test.describe("voter list (Pemilih)", () => {
 
     // A row with an unknown group blocks the whole paste.
     await admin.getByRole("textbox", { name: "Tempel di sini" }).fill("Siti\tX-2\tguru");
-    await expect(admin.getByText(/kelompok "guru" tidak dikenal/)).toBeVisible();
+    await expect(admin.getByText(/perwakilan "guru" tidak dikenal/)).toBeVisible();
     await expect(admin.getByRole("button", { name: /Tambahkan/ })).toBeDisabled();
 
     const zaki = admin.getByTestId("voter-row").filter({ hasText: "Zaki Firmansyah" });
@@ -118,7 +118,7 @@ test.describe("voter list (Pemilih)", () => {
     await admin
       .getByRole("textbox", { name: "Tempel di sini" })
       .fill("Zaki Firmansyah\tXI-5");
-    await admin.getByLabel("Kelompok untuk baris tanpa kolom kelompok").selectOption({ label: "Ketua Eskul" });
+    await admin.getByLabel("Perwakilan untuk baris tanpa kolom perwakilan").selectOption({ label: "Ketua Eskul" });
     await admin.getByRole("button", { name: "Tambahkan 1 nama" }).click();
     await expect(admin.getByText("1 nama ditambahkan.")).toBeVisible();
     const phone = await (await browser.newContext()).newPage();

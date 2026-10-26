@@ -63,7 +63,7 @@ export async function resultsToPdf(results: Results, exportedAt: Date): Promise<
 
   y -= 6;
   hr(page, left, right, y + 8);
-  text("KEHADIRAN PER KELOMPOK", left, 12, bold);
+  text("KEHADIRAN PER PERWAKILAN", left, 12, bold);
   y -= 20;
   for (const g of results.groups) {
     text(g.label, left, 10);

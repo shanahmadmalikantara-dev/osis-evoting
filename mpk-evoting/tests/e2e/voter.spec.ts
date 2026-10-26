@@ -16,7 +16,7 @@ test.describe("voter page on a phone", () => {
     // The roster is not sent to the phone before voting opens.
     await expect(page.getByText("Andi Saputra")).toHaveCount(0);
     await resetElection({ status: "open" });
-    await expect(page.getByRole("heading", { name: "Kamu dari kelompok mana?" })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("heading", { name: "Kamu perwakilan apa?" })).toBeVisible({ timeout: 15_000 });
   });
 
   test("kelompok -> kelas -> nama -> paslon, then the phone stays on the thank-you screen", async ({ page }) => {

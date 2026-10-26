@@ -167,7 +167,7 @@ export function VoterApp({ initial }: { initial: Ballot }) {
 }
 
 const STEP_LABELS = [
-  { kind: "kelompok", label: "Kelompok" },
+  { kind: "kelompok", label: "Perwakilan" },
   { kind: "kelas", label: "Kelas" },
   { kind: "nama", label: "Nama" },
   { kind: "ballot", label: "Paslon" },
@@ -255,7 +255,7 @@ const TILT = ["-0.8deg", "0.6deg", "-0.4deg", "0.9deg"];
 
 function KelompokStep({ roster, onPick }: { roster: RosterVoter[]; onPick: (k: KelompokKey) => void }) {
   return (
-    <StepCard file="Langkah 1 dari 4" title="Kamu dari kelompok mana?" hint="Pilih sesuai kamu didaftarkan panitia.">
+    <StepCard file="Langkah 1 dari 4" title="Kamu perwakilan apa?" hint="Pilih sesuai kamu didaftarkan panitia.">
       <div className="flex flex-col gap-3">
         {KELOMPOK.map((k, i) => {
           const count = roster.filter((v) => v.kelompok === k.key).length;
@@ -301,7 +301,7 @@ function KelasStep({
   return (
     <StepCard file="Langkah 2 dari 4" title="Kelas kamu?" hint={kelompokLabel(kelompok)} onBack={onBack}>
       {kelasList.length === 0 ? (
-        <p className="font-type text-ink">Belum ada nama di kelompok ini. Tanya pengawas.</p>
+        <p className="font-type text-ink">Belum ada nama di perwakilan ini. Tanya pengawas.</p>
       ) : (
         <div className="grid grid-cols-3 gap-3">
           {kelasList.map((kelas) => (

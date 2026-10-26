@@ -31,8 +31,8 @@ export function parseRoster(text: string, fallback: KelompokKey | null): ParseRe
     if (!kelompok) {
       problems.push(
         kelompokText
-          ? `Baris ${lineNo}: kelompok "${kelompokText}" tidak dikenal.`
-          : `Baris ${lineNo}: kelompok kosong. Isi kolom ketiga atau pilih kelompok di atas.`,
+          ? `Baris ${lineNo}: perwakilan "${kelompokText}" tidak dikenal.`
+          : `Baris ${lineNo}: perwakilan kosong. Isi kolom ketiga atau pilih perwakilan di atas.`,
       );
       return;
     }

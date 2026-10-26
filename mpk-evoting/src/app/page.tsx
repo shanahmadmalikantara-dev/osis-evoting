@@ -12,6 +12,8 @@ const ROLES = [
     body: "Pantau suara masuk secara live, buka dan tutup voting, kelola paslon dan daftar pemilih.",
     rot: "-2deg",
     icon: <ChartIcon />,
+    // Most visitors are voters on a phone: on small screens the voter card comes first.
+    order: "order-2 sm:order-1",
   },
   {
     href: "/pilih",
@@ -19,22 +21,23 @@ const ROLES = [
     file: "Berkas B",
     title: "Pemilih",
     tag: "Lewat HP",
-    body: "Pilih kelompok, kelas, dan namamu, lalu pilih paslon. Satu orang satu suara.",
+    body: "Pilih perwakilan, kelas, dan namamu, lalu pilih paslon. Satu orang satu suara.",
     rot: "1.6deg",
     icon: <BallotIcon />,
+    order: "order-1 sm:order-2",
   },
 ];
 
 export default function HomePage() {
   return (
-    <main className="relative isolate flex min-h-dvh flex-col overflow-hidden px-gutter py-10 sm:px-8">
+    <main className="relative isolate flex min-h-dvh flex-col overflow-hidden px-gutter py-6 sm:px-8 sm:py-10">
       <Backdrop />
       <Decorations />
 
-      <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-14">
+      <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-8 sm:gap-14">
         <Headline />
 
-        <div className="fx-grid relative grid w-full max-w-4xl gap-12 sm:grid-cols-2">
+        <div className="fx-grid relative grid w-full max-w-4xl gap-7 sm:grid-cols-2 sm:gap-12">
           <svg
             aria-hidden
             viewBox="0 0 1000 80"
@@ -56,7 +59,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <p className="paper flex max-w-lg rotate-[-0.8deg] animate-fade items-center gap-3 px-5 py-3 text-left font-type text-sm text-ink [animation-delay:700ms]">
+        <p className="paper flex max-w-lg rotate-[-0.8deg] animate-fade items-center gap-3 px-4 py-2.5 text-left font-type text-xs text-ink [animation-delay:700ms] sm:px-5 sm:py-3 sm:text-sm">
           <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-surface-dark text-on-dark">
             <LockIcon />
           </span>
@@ -71,16 +74,18 @@ export default function HomePage() {
 function Headline() {
   return (
     <header className="relative animate-drop">
-      <span aria-hidden className="tape absolute -left-8 -top-3 z-10 h-7 w-24 -rotate-[20deg]" />
-      <span aria-hidden className="tape absolute -bottom-3 -right-8 z-10 h-7 w-24 -rotate-[20deg]" />
-      <div className="newsprint -rotate-1 px-5 pb-5 pt-3 text-center sm:px-14">
+      <span aria-hidden className="tape absolute -left-5 -top-3 z-10 h-6 w-20 -rotate-[20deg] sm:-left-8 sm:h-7 sm:w-24" />
+      <span aria-hidden className="tape absolute -bottom-3 -right-5 z-10 h-6 w-20 -rotate-[20deg] sm:-right-8 sm:h-7 sm:w-24" />
+      <div className="newsprint -rotate-1 px-4 pb-4 pt-3 text-center sm:px-14 sm:pb-5">
         <div className="flex items-center justify-between gap-8 border-b-2 border-ink pb-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-ink-soft sm:text-[11px]">
           <span>Edisi khusus</span>
           <span>MAN 4 Jakarta</span>
         </div>
-        <p className="mt-2 font-type text-sm uppercase tracking-[0.3em] text-ink-soft">Pemilihan ketua &amp; wakil ketua MPK</p>
-        <h1 className="font-display text-[2.6rem] font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl">KADERISASI 2026</h1>
-        <p className="mx-auto mt-2 max-w-2xl border-t border-ink/40 pt-2 font-hand text-2xl font-bold leading-tight text-pink">
+        <p className="mt-2 font-type text-[11px] uppercase tracking-[0.2em] text-ink-soft sm:text-sm sm:tracking-[0.3em]">
+          Pemilihan ketua &amp; wakil ketua MPK
+        </p>
+        <h1 className="whitespace-nowrap font-display text-[clamp(1.9rem,9.5vw,2.6rem)] font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl">KADERISASI 2026</h1>
+        <p className="mx-auto mt-2 max-w-2xl border-t border-ink/40 pt-2 font-hand text-lg font-bold leading-tight text-pink sm:text-2xl">
           Integrity for Foundation, Wisdom for Direction: Leading Beyond Expectation
         </p>
       </div>
@@ -97,6 +102,7 @@ function CaseFile({
   body,
   rot,
   icon,
+  order,
   index,
 }: (typeof ROLES)[number] & { index: number }) {
   const style = {
@@ -106,24 +112,26 @@ function CaseFile({
     "--fx-radius": "var(--radius-modal)",
     animationDelay: `${250 + index * 150}ms` } as CSSProperties;
   return (
-    <Link href={href} style={style} className="fx-card group relative block animate-drop">
-      <div className="fx-body relative pt-8">
-        <span aria-hidden className="manila absolute left-5 top-0 h-10 w-40 rounded-t-[6px] shadow-none" />
-        <span className="absolute left-9 top-2 font-type text-sm uppercase tracking-widest text-ink-soft">{file}</span>
+    <Link href={href} style={style} className={`fx-card group relative block animate-drop ${order}`}>
+      <div className="fx-body relative pt-7 sm:pt-8">
+        <span aria-hidden className="manila absolute left-5 top-0 h-9 w-32 rounded-t-[6px] shadow-none sm:h-10 sm:w-40" />
+        <span className="absolute left-8 top-1.5 font-type text-xs uppercase tracking-widest text-ink-soft sm:left-9 sm:top-2 sm:text-sm">
+          {file}
+        </span>
         <div className="manila relative flex flex-col overflow-hidden rounded-modal">
           <PaperClip className="absolute -top-4 right-8 h-14 w-5 rotate-6" />
-          <div className="flex items-center gap-5 px-6 pb-4 pt-7">
-            <div className="paper relative grid size-24 shrink-0 -rotate-6 place-items-center p-2">
+          <div className="flex items-center gap-4 px-4 pb-2 pt-5 sm:gap-5 sm:px-6 sm:pb-4 sm:pt-7">
+            <div className="paper relative grid size-16 shrink-0 -rotate-6 place-items-center p-1.5 sm:size-24 sm:p-2">
               <span aria-hidden className="fx-pin pin absolute -top-2 left-1/2 z-10 size-4" />
               <span className="fx-photo grid size-full place-items-center bg-mint/60 text-ink">{icon}</span>
             </div>
             <div className="flex flex-col items-start gap-2">
-              <span className="fx-stamp rubber-stamp px-2 py-0.5 text-[11px]">{tag}</span>
-              <span className="font-display text-5xl font-black leading-none">{title}</span>
+              <span className="fx-stamp rubber-stamp px-2 py-0.5 text-[10px] sm:text-[11px]">{tag}</span>
+              <span className="font-display text-4xl font-black leading-none sm:text-5xl">{title}</span>
             </div>
           </div>
-          <p className="px-6 pb-6 font-type text-base leading-relaxed text-ink">{body}</p>
-          <span className="fx-cta flex items-center justify-between bg-surface-dark px-6 py-4 font-type text-sm uppercase tracking-[0.15em] text-on-dark">
+          <p className="px-4 pb-4 font-type text-sm leading-relaxed text-ink sm:px-6 sm:pb-6 sm:text-base">{body}</p>
+          <span className="fx-cta flex items-center justify-between bg-surface-dark px-4 py-3 font-type text-sm uppercase tracking-[0.15em] text-on-dark sm:px-6 sm:py-4">
             {cta}
             <span aria-hidden className="fx-arrow text-lg">
               →
@@ -195,7 +203,7 @@ function MagnifierProp() {
 
 function ChartIcon() {
   return (
-    <svg aria-hidden viewBox="0 0 24 24" className="size-12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+    <svg aria-hidden viewBox="0 0 24 24" className="size-9 sm:size-12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
       <path d="M4 20h16" />
       <path d="M7 16v-5M12 16V6M17 16v-8" />
     </svg>
@@ -204,7 +212,7 @@ function ChartIcon() {
 
 function BallotIcon() {
   return (
-    <svg aria-hidden viewBox="0 0 24 24" className="size-12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden viewBox="0 0 24 24" className="size-9 sm:size-12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M7 13V3h10v10" />
       <path d="M9.5 8l1.8 1.8 3.2-3.3" />
       <rect x="3" y="13" width="18" height="8" rx="1.5" />

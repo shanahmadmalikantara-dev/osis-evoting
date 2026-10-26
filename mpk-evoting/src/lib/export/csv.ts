@@ -28,10 +28,10 @@ export function resultsToCsv(results: Results, voters: ListedVoter[], exportedAt
       row(c.nomor_urut, c.nama_ketua, c.nama_wakil, c.votes, percent(c.votes, results.total)),
     ),
     "",
-    row("Kelompok", "Sudah memilih", "Terdaftar"),
+    row("Perwakilan", "Sudah memilih", "Terdaftar"),
     ...results.groups.map((g) => row(g.label, g.voted, g.total)),
     "",
-    row("Nama", "Kelas", "Kelompok", "Pilihan (no. paslon)", "Waktu memilih"),
+    row("Nama", "Kelas", "Perwakilan", "Pilihan (no. paslon)", "Waktu memilih"),
     ...voters.map((v) =>
       row(v.nama, v.kelas, kelompokLabel(v.kelompok), v.nomor_urut ?? "belum memilih", formatDateTime(v.voted_at)),
     ),

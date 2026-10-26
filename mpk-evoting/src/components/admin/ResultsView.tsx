@@ -4,7 +4,7 @@ import { percent } from "@/lib/format";
 import type { Results } from "@/lib/types";
 
 // Live numbers on the evidence board: index cards for the summary, a typed report with one bar
-// per candidate (in the candidate's color), and turnout per voter group.
+// per candidate (in the candidate's color), and turnout per representation group.
 export function ResultsView({ results }: { results: Results }) {
   const max = Math.max(1, ...results.candidates.map((c) => c.votes));
   const leaderVotes = Math.max(0, ...results.candidates.map((c) => c.votes));
@@ -93,7 +93,7 @@ export function ResultsView({ results }: { results: Results }) {
         >
           <span aria-hidden className="tape absolute -top-3 left-1/2 h-7 w-28 -translate-x-1/2 rotate-2" />
           <h2 id="per-group" className="mb-6 font-display text-3xl font-black">
-            Per kelompok
+            Per perwakilan
           </h2>
           <ul className="flex flex-col gap-4">
             {results.groups.map((g) => (

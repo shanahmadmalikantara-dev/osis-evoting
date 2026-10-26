@@ -1,6 +1,6 @@
 # E-Voting Ketua & Wakil Ketua MPK MAN 4 Jakarta
 
-Versi MPK dari aplikasi pemilu OSIS: pemilih memilih lewat **HP masing-masing**, dengan memilih kelompok, kelas, dan namanya sendiri dari daftar yang diisi panitia. Satu orang satu suara.
+Versi MPK dari aplikasi pemilu OSIS: pemilih memilih lewat **HP masing-masing**, dengan memilih perwakilan, kelas, dan namanya sendiri dari daftar yang diisi panitia. Satu orang satu suara.
 
 - Aturan proyek: [CLAUDE.md](CLAUDE.md)
 - Panduan pasang (Supabase + Vercel baru): [docs/DEPLOY.md](docs/DEPLOY.md)
@@ -11,8 +11,8 @@ Versi MPK dari aplikasi pemilu OSIS: pemilih memilih lewat **HP masing-masing**,
 | Alamat | Untuk | Isi |
 |---|---|---|
 | `/` | semua | Tombol "Lanjut sebagai Admin" dan "Lanjut sebagai Pemilih" |
-| `/pilih` | pemilih (tanpa login) | Kelompok → kelas → nama → kartu paslon → konfirmasi → "Terima kasih" (final) |
-| `/admin` | admin | Dashboard live, kehadiran per kelompok, buka/tutup voting, uji coba, ekspor CSV/PDF |
+| `/pilih` | pemilih (tanpa login) | Perwakilan → kelas → nama → kartu paslon → konfirmasi → "Terima kasih" (final) |
+| `/admin` | admin | Dashboard live, kehadiran per perwakilan, buka/tutup voting, uji coba, ekspor CSV/PDF |
 | `/admin/pemilih` | admin | Daftar pemilih, siapa memilih siapa, batalkan suara, tempel dari Excel |
 | `/admin/paslon` | admin | Tambah/ubah/hapus paslon dan foto (hanya saat draft) |
 | `/admin/audit` | admin | Catatan semua aksi admin |
@@ -42,9 +42,9 @@ npm run reset-password -- admin # password admin baru
 
 | Keputusan | Alasan |
 |---|---|
-| Pemilih tidak login; memilih nama dari daftar (kelompok → kelas → nama). | Pilihan Ahmad (26 Okt 2026). Voting di sekolah dengan pengawas. Konsekuensi: siapa pun yang tahu alamat web saat voting dibuka bisa memilih atas nama orang yang belum memilih. Pengawas mengawasi, dan admin bisa membatalkan suara yang salah. |
+| Pemilih tidak login; memilih nama dari daftar (perwakilan → kelas → nama). | Pilihan Ahmad (26 Okt 2026). Voting di sekolah dengan pengawas. Konsekuensi: siapa pun yang tahu alamat web saat voting dibuka bisa memilih atas nama orang yang belum memilih. Pengawas mengawasi, dan admin bisa membatalkan suara yang salah. |
 | Daftar pemilih hanya dikirim ke HP saat status **Dibuka**. | Nama perwakilan tidak terbuka untuk umum di luar waktu voting. |
-| Satu orang satu baris (unik nama + kelas), meskipun masuk 2 kelompok. | Pilihan Ahmad: 1 orang 1 suara. Saat tempel dari Excel, baris kedua otomatis dilewati dan dilaporkan. |
+| Satu orang satu baris (unik nama + kelas), meskipun masuk 2 perwakilan. | Pilihan Ahmad: 1 orang 1 suara. Saat tempel dari Excel, baris kedua otomatis dilewati dan dilaporkan. |
 | Suara masuk lewat server (`cast_vote_voter`, hanya service_role), bukan langsung dari browser. | Browser pemilih tidak punya akses database sama sekali. Fungsi di database mengunci per orang, jadi dua HP yang memilih nama sama bersamaan tetap hanya tercatat satu. |
 | HP yang sudah memilih menyimpan cookie dan tetap di layar "Terima kasih". | Pilihan Ahmad: HP masing-masing, setelah memilih web "tertutup". Kalau suaranya dibatalkan admin atau uji coba diakhiri, HP itu bisa dipakai memilih lagi. |
 | Admin bisa melihat nama + pilihan, dan ikut di ekspor CSV (PDF hanya angka). | Pilihan Ahmad (26 Okt 2026). Pilihan ini membuat suara **tidak rahasia** bagi admin. |

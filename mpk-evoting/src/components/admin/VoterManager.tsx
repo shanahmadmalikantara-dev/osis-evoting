@@ -126,8 +126,8 @@ export function VoterManager({ initialVoters, status }: { initialVoters: ListedV
             aria-label="Cari nama atau kelas"
             className={FIELD}
           />
-          <select value={kelompok} onChange={(e) => setKelompok(e.target.value as "" | KelompokKey)} aria-label="Kelompok" className={FIELD}>
-            <option value="">Semua kelompok</option>
+          <select value={kelompok} onChange={(e) => setKelompok(e.target.value as "" | KelompokKey)} aria-label="Perwakilan" className={FIELD}>
+            <option value="">Semua perwakilan</option>
             {KELOMPOK.map((k) => (
               <option key={k.key} value={k.key}>
                 {k.label}
@@ -289,13 +289,13 @@ function ImportSection({
           Tambah nama
         </h2>
         <p className="font-type text-sm text-ink">
-          Salin dari Excel 3 kolom: <strong>Nama</strong>, <strong>Kelas</strong>, <strong>Kelompok</strong>, lalu tempel di
-          bawah. Kalau semua nama dari kelompok yang sama, cukup 2 kolom (Nama, Kelas) dan pilih kelompoknya. Nama yang sudah
+          Salin dari Excel 3 kolom: <strong>Nama</strong>, <strong>Kelas</strong>, <strong>Perwakilan</strong>, lalu tempel di
+          bawah. Kalau semua nama dari perwakilan yang sama, cukup 2 kolom (Nama, Kelas) dan pilih perwakilannya. Nama yang sudah
           ada dengan kelas yang sama otomatis dilewati.
         </p>
       </div>
       <label className="flex flex-col gap-1">
-        <span className="font-type text-xs uppercase tracking-widest text-ink-soft">Kelompok untuk baris tanpa kolom kelompok</span>
+        <span className="font-type text-xs uppercase tracking-widest text-ink-soft">Perwakilan untuk baris tanpa kolom perwakilan</span>
         <select value={fallback} onChange={(e) => setFallback(e.target.value as "" | KelompokKey)} className={FIELD}>
           <option value="">(ambil dari kolom ke-3)</option>
           {KELOMPOK.map((k) => (

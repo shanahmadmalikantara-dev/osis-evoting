@@ -7,12 +7,12 @@ Untuk panitia dan pengawas. Alamat website ditulis `ALAMAT` (contoh: `https://pe
 ## Sebelum hari-H
 
 ### 1. Isi daftar pemilih asli
-1. Siapkan Excel dengan 3 kolom: **Nama**, **Kelas**, **Kelompok** (isi kelompok dengan: `Ketua Eskul`, `Perwakilan Kelas`, `OSIS/MPK 2025/2026`, atau `Calon OSIS/MPK 2026/2027`).
+1. Siapkan Excel dengan 3 kolom: **Nama**, **Kelas**, **Perwakilan** (isi perwakilan dengan: `Ketua Eskul`, `Perwakilan Kelas`, `OSIS/MPK 2025/2026`, atau `Calon OSIS/MPK 2026/2027`).
 2. Login admin di `ALAMAT/admin/login`, buka menu **Pemilih**.
 3. Klik **Kosongkan daftar** untuk membuang 12 nama contoh.
 4. Blok semua isi Excel (boleh dengan judul kolomnya), **Ctrl + C**, lalu tempel di kotak **Tempel di sini**.
 5. Cek ringkasannya ("... nama siap ditambahkan"). Kalau ada baris merah, perbaiki di Excel lalu tempel ulang.
-6. Klik **Tambahkan ... nama**. Nama yang sama dengan kelas yang sama otomatis dilewati, jadi orang yang masuk 2 kelompok tetap 1 suara.
+6. Klik **Tambahkan ... nama**. Nama yang sama dengan kelas yang sama otomatis dilewati, jadi orang yang masuk 2 perwakilan tetap 1 suara.
 
 Nama yang salah ketik bisa dihapus (tombol **Hapus**) lalu ditambah lagi, selama orang itu belum memilih.
 
@@ -24,7 +24,7 @@ Proyek gratis otomatis dijeda kalau 7 hari tidak dipakai. Buka supabase.com, pas
 
 ### 4. Uji coba (wajib)
 1. Dashboard → **Mulai uji coba**.
-2. Dari 1–2 HP, buka `ALAMAT/pilih`, pilih kelompok, kelas, nama, lalu paslon. Harus muncul **"TERIMA KASIH"**.
+2. Dari 1–2 HP, buka `ALAMAT/pilih`, pilih perwakilan, kelas, nama, lalu paslon. Harus muncul **"TERIMA KASIH"**.
 3. Di dashboard angkanya naik, dan di menu **Pemilih** nama itu tertulis "Memilih paslon ...".
 4. Klik **Akhiri uji coba**. Suara uji hilang, nama kembali "Belum memilih", dan HP tadi bisa dipakai lagi.
 
@@ -38,7 +38,7 @@ Proyek gratis otomatis dijeda kalau 7 hari tidak dipakai. Buka supabase.com, pas
 3. Bagikan alamat `ALAMAT/pilih` (misalnya lewat QR code di papan atau grup WA). Halaman di HP yang sudah terbuka akan berubah sendiri dalam ±10 detik.
 
 ### Selama voting
-- Pemilih memakai **HP masing-masing**: pilih kelompok → kelas → nama sendiri → paslon → **Ya, kirim**.
+- Pemilih memakai **HP masing-masing**: pilih perwakilan → kelas → nama sendiri → paslon → **Ya, kirim**.
 - Setelah memilih, HP itu tetap di layar **"TERIMA KASIH"** dan namanya tercoret untuk semua orang.
 - Pengawas memastikan setiap orang memilih **namanya sendiri**.
 - Pantau menu **Pemilih**: filter "Belum memilih" untuk melihat siapa yang belum.
