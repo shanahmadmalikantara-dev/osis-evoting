@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   // Every page here depends on the logged-in user, so we keep classic dynamic rendering
   // (no Cache Components) for simplicity.
   turbopack: {
+    // This app lives in a subfolder of the OSIS repo; without this Next.js picks the parent lockfile.
+    root: import.meta.dirname,
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],

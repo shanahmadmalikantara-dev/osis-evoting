@@ -7,12 +7,12 @@ import { applyMigrations, applySeed } from "../../scripts/lib/migrate";
 // Tests run against a throwaway local Postgres, e.g.
 // TEST_DATABASE_URL=postgres://postgres@localhost:54329/postgres
 export const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
-const TEST_DB_NAME = "evoting_test";
+const TEST_DB_NAME = "mpk_evoting_test";
 
 export type Actor = {
   id: string;
   email: string;
-  role: "admin" | "bilik" | "anon" | "none";
+  role: "admin" | "anon" | "none" | "service";
 };
 
 export async function createFreshDatabase(): Promise<Client> {
@@ -43,8 +43,8 @@ export async function createFreshDatabase(): Promise<Client> {
 }
 
 export async function createUser(client: Client, label: string, role: Actor["role"]): Promise<Actor> {
-  const actor: Actor = { id: randomUUID(), email: `${label}@osis.test`, role };
-  if (role === "admin" || role === "bilik") {
+  const actor: Actor = { id: randomUUID(), email: `${label}@mpk.test`, role };
+  if (role === "admin") {
     await client.query(
       "insert into auth.users (id, email, raw_app_meta_data) values ($1, $2, $3)",
       [actor.id, actor.email, { role }],
@@ -55,10 +55,11 @@ export async function createUser(client: Client, label: string, role: Actor["rol
 
 // Runs `fn` inside a transaction as the given API user, exactly like PostgREST does.
 export async function as<T>(client: Client, actor: Actor, fn: () => Promise<T>): Promise<T> {
-  const dbRole = actor.role === "anon" ? "anon" : "authenticated";
+  // "service" is the server (service_role key), which is how the voter page reaches the database.
+  const dbRole = actor.role === "anon" ? "anon" : actor.role === "service" ? "service_role" : "authenticated";
   const claims =
-    actor.role === "anon"
-      ? { role: "anon" }
+    actor.role === "anon" || actor.role === "service"
+      ? { role: dbRole }
       : { sub: actor.id, email: actor.email, role: "authenticated", app_metadata: actor.role === "none" ? {} : { role: actor.role } };
   await client.query("begin");
   try {
@@ -78,8 +79,11 @@ export async function candidateIds(client: Client): Promise<string[]> {
   return rows.map((r) => r.id);
 }
 
-export async function setCooldown(client: Client, seconds: number): Promise<void> {
-  await client.query("update public.election set vote_cooldown_seconds = $1 where id = 1", [seconds]);
+export type Voter = { id: string; nama: string; kelas: string; kelompok: string };
+
+export async function voterList(client: Client): Promise<Voter[]> {
+  const { rows } = await client.query<Voter>("select id, nama, kelas, kelompok from public.voters order by nama");
+  return rows;
 }
 
 export async function errorOf(promise: Promise<unknown>): Promise<string> {

@@ -2,13 +2,13 @@ import { createClient } from "@supabase/supabase-js";
 import { Client } from "pg";
 
 export const PASSWORD = "E2e-Test-Password-123";
-export const DOMAIN = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-osis.local";
+export const DOMAIN = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-mpk.local";
 
 export const E2E_USERS = {
   admin: { username: "e2e-admin", role: "admin" },
-  bilik: { username: "e2e-bilik", role: "bilik" },
-  bilik2: { username: "e2e-bilik2", role: "bilik" },
-  locked: { username: "e2e-locked", role: "bilik" },
+  // A Supabase account without the admin role (must be refused by the admin login).
+  norole: { username: "e2e-norole", role: "none" },
+  locked: { username: "e2e-locked", role: "admin" },
 } as const;
 
 export function assertLocal() {
@@ -35,7 +35,8 @@ export async function withDb<T>(fn: (db: Client) => Promise<T>): Promise<T> {
   }
 }
 
-// TEST ONLY (local database): puts the election back into a known state and wipes votes.
+// TEST ONLY (local database): puts the election back into a known state, wipes votes and
+// restores the seed roster.
 // Unlike the dashboard's reset (closed elections only), this works in any state; tests only.
 export async function resetElection(state: { status: "draft" | "open" | "closed"; testMode?: boolean }) {
   assertLocal();
@@ -44,6 +45,8 @@ export async function resetElection(state: { status: "draft" | "open" | "closed"
     await db.query("alter table public.votes disable trigger user");
     await db.query("delete from public.votes");
     await db.query("alter table public.votes enable trigger user");
+    await db.query("delete from public.voters");
+    await db.query(SEED_VOTERS);
     await db.query(
       "update public.election set status = $1, test_mode = $2, vote_cooldown_seconds = 0, opened_at = null, closed_at = null where id = 1",
       [state.status, state.testMode ?? false],
@@ -68,13 +71,22 @@ export async function countVotes(): Promise<{ total: number; byNumber: Record<nu
   });
 }
 
-// TEST ONLY: restores the four seed candidates (election must be in draft, votes empty).
+const SEED_VOTERS = `
+  insert into public.voters (nama, kelas, kelompok) values
+    ('Andi Saputra', 'X-1', 'perwakilan_kelas'), ('Bunga Lestari', 'X-2', 'perwakilan_kelas'),
+    ('Citra Maharani', 'XI-1', 'perwakilan_kelas'), ('Dafa Hidayat', 'XI-2', 'perwakilan_kelas'),
+    ('Eka Wulandari', 'XII-1', 'perwakilan_kelas'), ('Farhan Akbar', 'XI-3', 'ketua_eskul'),
+    ('Gita Permata', 'X-3', 'ketua_eskul'), ('Hana Safitri', 'XII-2', 'ketua_eskul'),
+    ('Irfan Maulana', 'XII-3', 'osis_mpk_lama'), ('Jihan Aulia', 'XI-4', 'osis_mpk_lama'),
+    ('Kevin Ramadhan', 'X-4', 'calon_osis_mpk'), ('Laila Zahra', 'X-1', 'calon_osis_mpk')`;
+
+// TEST ONLY: restores the two seed candidates (election must be in draft, votes empty).
 export async function resetCandidates() {
   assertLocal();
   const { readFile } = await import("node:fs/promises");
   const seed = await readFile("supabase/seed.sql", "utf8");
   await withDb(async (db) => {
     await db.query("delete from public.candidates");
-    await db.query(seed);
+    await db.query(seed.replace(/insert into public\.voters[\s\S]*$/, ""));
   });
 }

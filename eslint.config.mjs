@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Offline backup app: own build (Vite + Tauri), see backup-app/README.md.
     "backup-app/**",
+    // MPK election site: separate app with its own lint config.
+    "mpk-evoting/**",
   ]),
 ]);
 

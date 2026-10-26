@@ -74,7 +74,7 @@ export async function saveCandidate(input: CandidateInput): Promise<SaveResult> 
   }
 
   revalidatePath("/admin", "layout");
-  revalidatePath("/bilik");
+  revalidatePath("/pilih");
   return { ok: true };
 }
 
@@ -90,6 +90,6 @@ export async function deleteCandidate(id: string): Promise<SaveResult> {
   if (path) await supabase.storage.from(PHOTO_BUCKET).remove([path]);
 
   revalidatePath("/admin", "layout");
-  revalidatePath("/bilik");
+  revalidatePath("/pilih");
   return { ok: true };
 }

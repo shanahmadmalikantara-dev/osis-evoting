@@ -1,9 +1,9 @@
 "use client";
 
-// Presentational pieces of the booth screen, shared by the online booth (/bilik) and the
-// offline backup app (backup-app/). Keep them free of Supabase and Next.js routing.
+// Presentational pieces of the ballot screen used by the voter page (/pilih).
+// Keep them free of Supabase and Next.js routing.
 import Image from "next/image";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { PaperClip } from "@/components/ui/PaperClip";
@@ -24,7 +24,7 @@ export type Phase =
 const STEPS = ["Ketuk foto paslon", "Periksa berkasnya", "Tekan Ya, kirim"];
 
 // Newspaper clipping taped to the board.
-export function BoothHeader({ edition = "Harian Pemilu OSIS · MAN 4 Jakarta" }: { edition?: string }) {
+export function BoothHeader({ edition = "Harian Pemilu MPK · MAN 4 Jakarta" }: { edition?: string }) {
   const today = new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   return (
     <header className="relative mx-auto w-full max-w-4xl animate-drop">
@@ -37,13 +37,13 @@ export function BoothHeader({ edition = "Harian Pemilu OSIS · MAN 4 Jakarta" }:
           <span suppressHydrationWarning>{today}</span>
         </div>
         <div className="border-b border-ink/40 py-1">
-          <h1 className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight sm:text-6xl 2xl:text-7xl">
+          <h1 className="font-display text-4xl font-black uppercase leading-[0.95] tracking-tight sm:text-6xl 2xl:text-7xl">
             PILIH PASLON
           </h1>
         </div>
         <ol className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           {STEPS.map((step, i) => (
-            <li key={step} className="flex items-center gap-2 font-type text-sm text-ink">
+            <li key={step} className="flex items-center gap-2 font-type text-xs text-ink sm:text-sm">
               <span className="grid size-6 place-items-center rounded-full border-2 border-pink font-mono text-xs font-bold text-pink">
                 {i + 1}
               </span>
@@ -102,11 +102,14 @@ export function ConfirmModal({
   onCancel,
   onConfirm,
   onRetry,
+  voter,
 }: {
   phase: Phase;
   onCancel: () => void;
   onConfirm: (candidate: Candidate) => void;
   onRetry: (candidate: Candidate, submissionId: string) => void;
+  // Who is voting, shown so the voter can check they picked their own name.
+  voter?: ReactNode;
 }) {
   const open = phase.kind === "confirming" || phase.kind === "sending" || phase.kind === "error";
   const candidate = open ? phase.candidate : null;
@@ -119,8 +122,8 @@ export function ConfirmModal({
           <span className="absolute left-9 top-[-1.35rem] font-type text-xs uppercase tracking-widest text-ink-soft">
             Berkas paslon no. {candidate.nomor_urut}
           </span>
-          <div className="flex items-center gap-6">
-            <div className="paper relative w-28 shrink-0 -rotate-3 p-1.5 pb-5 sm:w-32">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="paper relative w-24 shrink-0 -rotate-3 p-1.5 pb-5 sm:w-32">
               <span aria-hidden className="pin absolute -top-2 left-1/2 z-10 size-4 -translate-x-1/2" />
               <div className="relative aspect-[4/5] overflow-hidden bg-[var(--accent)]">
                 {candidate.foto_url ? (
@@ -133,7 +136,7 @@ export function ConfirmModal({
             </div>
             <div className="flex min-w-0 flex-col gap-2">
               <span className="rubber-stamp w-fit -rotate-3 px-2 py-0.5 text-xs">Konfirmasi</span>
-              <h2 id="confirm-title" className="font-display text-3xl font-black leading-tight sm:text-4xl">
+              <h2 id="confirm-title" className="font-display text-2xl font-black leading-tight sm:text-4xl">
                 Yakin memilih Paslon {candidate.nomor_urut}?
               </h2>
               <p className="font-type text-base leading-snug text-ink">
@@ -141,6 +144,13 @@ export function ConfirmModal({
               </p>
             </div>
           </div>
+
+          {voter ? (
+            <div className="paper -rotate-[0.6deg] px-4 py-2 font-type text-sm text-ink">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-soft">Memilih sebagai</span>
+              <div className="text-base">{voter}</div>
+            </div>
+          ) : null}
 
           {phase.kind === "error" ? (
             <>
@@ -159,11 +169,11 @@ export function ConfirmModal({
             </>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-4">
-                <Button size="xl" variant="secondary" disabled={sending} onClick={onCancel}>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <Button size="xl" variant="secondary" disabled={sending} onClick={onCancel} className="px-3 sm:px-8">
                   Batal
                 </Button>
-                <Button size="xl" disabled={sending} onClick={() => onConfirm(candidate)}>
+                <Button size="xl" disabled={sending} onClick={() => onConfirm(candidate)} className="px-3 sm:px-8">
                   {sending ? "Mengirim..." : "Ya, kirim"}
                 </Button>
               </div>
@@ -212,24 +222,36 @@ export function AutoCancel({ onTimeout }: { onTimeout: () => void }) {
   );
 }
 
-export function ThanksScreen({ onDone }: { onDone: () => void }) {
+// With onDone the screen returns by itself after a few seconds; without it, it stays (the
+// voter page: one phone, one voter, nothing more to do).
+export function ThanksScreen({
+  onDone,
+  message = "Suaramu sudah masuk. Silakan keluar dari bilik.",
+  confetti = true,
+}: {
+  onDone?: () => void;
+  message?: string;
+  confetti?: boolean;
+}) {
   const doneRef = useRef(onDone);
   useEffect(() => {
     doneRef.current = onDone;
   }, [onDone]);
+  const autoReturn = Boolean(onDone);
   useEffect(() => {
-    const timer = setTimeout(() => doneRef.current(), THANKS_SECONDS * 1000);
+    if (!autoReturn) return;
+    const timer = setTimeout(() => doneRef.current?.(), THANKS_SECONDS * 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [autoReturn]);
 
   return (
     <div role="status" className="relative flex flex-1 flex-col items-center justify-center overflow-hidden">
-      <Confetti />
-      <div className="paper-ruled relative w-full max-w-3xl animate-pop px-8 pb-10 pt-12 text-center sm:px-14">
+      {confetti ? <Confetti /> : null}
+      <div className="paper-ruled relative w-full max-w-3xl animate-pop px-6 pb-10 pt-12 text-center sm:px-14">
         <span aria-hidden className="pin absolute -top-3 left-1/2 size-7 -translate-x-1/2" />
         <span
           aria-hidden
-          className="rubber-stamp absolute -right-4 -top-6 grid size-36 animate-stamp place-items-center rounded-full bg-surface/60 text-center text-sm leading-tight [--stamp:var(--color-success)] sm:-right-10 sm:size-44"
+          className="rubber-stamp absolute -right-2 -top-16 grid size-28 animate-stamp place-items-center rounded-full bg-surface/60 text-center text-sm leading-tight [--stamp:var(--color-success)] sm:-right-10 sm:size-44"
         >
           <span className="flex flex-col items-center gap-1">
             <span>Suara</span>
@@ -238,14 +260,16 @@ export function ThanksScreen({ onDone }: { onDone: () => void }) {
           </span>
         </span>
         <p className="font-hand text-3xl font-bold text-pink">Kasus ditutup, detektif!</p>
-        <h1 className="mt-2 font-display text-6xl font-black leading-none sm:text-8xl">TERIMA KASIH</h1>
-        <p className="mt-5 font-type text-xl text-ink">Suaramu sudah masuk. Silakan keluar dari bilik.</p>
-        <div className="mx-auto mt-8 flex w-64 flex-col gap-2">
-          <div aria-hidden className="h-1.5 overflow-hidden rounded-full bg-ink/15">
-            <div className="h-full origin-left rounded-full bg-ink" style={{ animation: `fill ${THANKS_SECONDS}s linear both` }} />
+        <h1 className="mt-2 font-display text-5xl font-black leading-none sm:text-8xl">TERIMA KASIH</h1>
+        <p className="mt-5 font-type text-lg text-ink sm:text-xl">{message}</p>
+        {autoReturn ? (
+          <div className="mx-auto mt-8 flex w-64 flex-col gap-2">
+            <div aria-hidden className="h-1.5 overflow-hidden rounded-full bg-ink/15">
+              <div className="h-full origin-left rounded-full bg-ink" style={{ animation: `fill ${THANKS_SECONDS}s linear both` }} />
+            </div>
+            <p className="font-type text-xs uppercase tracking-widest text-ink-soft">Layar kembali otomatis</p>
           </div>
-          <p className="font-type text-xs uppercase tracking-widest text-ink-soft">Layar kembali otomatis</p>
-        </div>
+        ) : null}
       </div>
     </div>
   );
@@ -294,25 +318,25 @@ export function ClosedScreen({
       <div className="relative w-full max-w-2xl animate-drop pt-8">
         <span aria-hidden className="manila absolute left-8 top-0 h-10 w-52 rounded-t-[6px] shadow-none" />
         <span className="absolute left-12 top-2 font-type text-sm uppercase tracking-widest text-ink-soft">
-          Berkas no. 001 · OSIS
+          Berkas no. 001 · MPK
         </span>
-        <div className="manila relative flex flex-col items-center gap-5 rounded-modal px-8 py-14 text-center shadow-card-lift">
+        <div className="manila relative flex flex-col items-center gap-5 rounded-modal px-6 py-12 text-center shadow-card-lift sm:px-8 sm:py-14">
           <PaperClip />
           <span
             className={`rubber-stamp animate-stamp px-5 py-2 text-xl ${closed ? "[--stamp:var(--color-blue)]" : ""}`}
           >
             {closed ? "Kasus ditutup" : "Rahasia · belum dibuka"}
           </span>
-          <h1 className="font-display text-5xl font-black leading-none sm:text-7xl">
+          <h1 className="font-display text-4xl font-black leading-none sm:text-7xl">
             {closed ? "SUDAH DITUTUP" : "BELUM DIBUKA"}
           </h1>
-          <p className="font-type text-xl text-ink">
+          <p className="font-type text-lg text-ink sm:text-xl">
             {closed
               ? "Pemungutan suara sudah ditutup. Terima kasih."
               : waitingText}
           </p>
           {closed ? null : (
-            <p className="flex items-center gap-2 font-hand text-2xl font-bold text-ink-soft">
+            <p className="flex items-center gap-2 font-hand text-xl font-bold text-ink-soft sm:text-2xl">
               <span aria-hidden className="size-2.5 rounded-full bg-pink [animation:blink_1.4s_ease-in-out_infinite]" />
               {waitingHint}
             </p>

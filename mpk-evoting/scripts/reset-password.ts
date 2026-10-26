@@ -1,5 +1,5 @@
 // LOCAL ONLY. Gives one account a new random password and prints it once.
-// Usage: npm run reset-password -- bilik3
+// Usage: npm run reset-password -- admin
 import { createClient } from "@supabase/supabase-js";
 import { generatePassword } from "./create-users";
 import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
@@ -7,10 +7,10 @@ import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 async function main() {
   const name = process.argv[2]?.trim().toLowerCase();
   if (!name) {
-    console.error("\nTulis nama akunnya, contoh: npm run reset-password -- bilik3\n");
+    console.error("\nTulis nama akunnya, contoh: npm run reset-password -- admin\n");
     process.exit(1);
   }
-  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-osis.local";
+  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-mpk.local";
   const email = name.includes("@") ? name : `${name}@${domain}`;
 
   const supabase = createClient(supabaseUrlFromEnv(), requireEnv("SUPABASE_SERVICE_ROLE_KEY"), {

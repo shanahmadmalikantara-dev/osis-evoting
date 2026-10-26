@@ -22,11 +22,7 @@ export async function proxy(request: NextRequest) {
   const role = roleFromClaims(data?.claims);
   const { pathname } = request.nextUrl;
 
-  const area: AppRole | null = pathname.startsWith("/admin")
-    ? "admin"
-    : pathname.startsWith("/bilik")
-      ? "bilik"
-      : null;
+  const area: AppRole | null = pathname.startsWith("/admin") ? "admin" : null;
   if (!area) return response;
 
   const isLoginPage = pathname === LOGIN_FOR_ROLE[area];

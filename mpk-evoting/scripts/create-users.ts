@@ -1,4 +1,4 @@
-// LOCAL ONLY. Creates the shared admin account and the 8 booth accounts with strong random passwords
+// LOCAL ONLY. Creates the shared admin account with a strong random password
 // and prints them ONCE. Existing accounts are left untouched (their password is not shown again).
 //
 // Usage: npm run create-users
@@ -9,7 +9,6 @@ import { requireEnv, supabaseUrlFromEnv } from "./lib/env";
 
 const ACCOUNTS = [
   { name: "admin", role: "admin" as const },
-  ...[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({ name: `bilik${n}`, role: "bilik" as const })),
 ];
 
 // No look-alike characters (0/O, 1/l/I) so passwords can be typed from paper.
@@ -27,7 +26,7 @@ export async function createUsers(): Promise<void> {
     requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
-  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-osis.local";
+  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-mpk.local";
 
   const { data: existing, error: listError } = await supabase.auth.admin.listUsers({ perPage: 1000 });
   if (listError) throw listError;

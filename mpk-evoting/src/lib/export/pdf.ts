@@ -15,7 +15,7 @@ function safe(text: string): string {
 
 export async function resultsToPdf(results: Results, exportedAt: Date): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
-  doc.setTitle("Hasil Pemilu OSIS MAN 4 Jakarta");
+  doc.setTitle("Hasil Pemilu MPK MAN 4 Jakarta");
   const page = doc.addPage([595.28, 841.89]); // A4
   const regular = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -63,11 +63,11 @@ export async function resultsToPdf(results: Results, exportedAt: Date): Promise<
 
   y -= 6;
   hr(page, left, right, y + 8);
-  text("SUARA PER BILIK", left, 12, bold);
+  text("KEHADIRAN PER KELOMPOK", left, 12, bold);
   y -= 20;
-  for (const b of results.booths) {
-    text(b.label, left, 10);
-    textRight(b.votes.toLocaleString("id-ID"), left + 200, 10, bold);
+  for (const g of results.groups) {
+    text(g.label, left, 10);
+    textRight(`${g.voted.toLocaleString("id-ID")} / ${g.total.toLocaleString("id-ID")}`, left + 300, 10, bold);
     y -= 15;
   }
 

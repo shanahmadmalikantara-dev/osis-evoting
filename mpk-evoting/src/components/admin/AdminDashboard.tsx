@@ -26,7 +26,7 @@ const CONFIRMATIONS: Record<LifecycleAction, Confirmation> = {
   start_test: {
     action: "start_test",
     title: "Mulai mode uji coba?",
-    body: "Bilik bisa dipakai untuk mencoba. Suara uji ditandai dan TIDAK dihitung di hasil resmi. Paslon terkunci selama uji coba.",
+    body: "Halaman pemilih bisa dipakai untuk mencoba. Suara uji ditandai dan TIDAK dihitung di hasil resmi. Paslon terkunci selama uji coba.",
     confirmLabel: "Mulai uji coba",
   },
   end_test: {
@@ -45,7 +45,7 @@ const CONFIRMATIONS: Record<LifecycleAction, Confirmation> = {
   close_voting: {
     action: "close_voting",
     title: "Tutup pemungutan suara?",
-    body: "Bilik tidak bisa menerima suara lagi. Langkah ini FINAL dan tidak bisa dibuka kembali.",
+    body: "Halaman pemilih tidak bisa menerima suara lagi. Langkah ini FINAL dan tidak bisa dibuka kembali.",
     confirmLabel: "Ya, tutup voting",
     danger: true,
   },
@@ -304,7 +304,7 @@ function statusInfo(results: Results): { label: string; color: StickerColor; hin
     return {
       label: "Uji coba",
       color: "pink",
-      hint: "Bilik menerima suara uji. Akhiri uji coba sebelum voting sungguhan.",
+      hint: "Halaman pemilih menerima suara uji. Akhiri uji coba sebelum voting sungguhan.",
       stamp: "",
       icon: "Uji",
     };

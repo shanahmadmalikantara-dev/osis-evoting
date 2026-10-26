@@ -7,6 +7,11 @@ const ADMIN_ERROR_TEXT: Record<string, string> = {
   candidates_locked: "Paslon hanya bisa diubah saat status draft.",
   reset_only_when_closed: "Data suara hanya bisa dihapus setelah voting ditutup.",
   reset_confirm_mismatch: "Tulisan konfirmasi tidak cocok. Ketik persis: HAPUS SEMUA SUARA",
+  roster_locked: "Daftar pemilih tidak bisa diubah pada status sekarang.",
+  voter_has_vote: "Orang ini sudah memilih. Batalkan suaranya dulu sebelum menghapus namanya.",
+  voter_not_found: "Nama tidak ditemukan. Muat ulang halaman.",
+  no_vote: "Orang ini belum memilih.",
+  invalid_input: "Data tidak valid. Periksa lagi isiannya.",
 };
 
 export function adminErrorText(message: string | undefined): string {

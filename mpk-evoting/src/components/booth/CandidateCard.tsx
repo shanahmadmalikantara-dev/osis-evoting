@@ -12,11 +12,14 @@ export function CandidateCard({
   onSelect,
   disabled,
   index = 0,
+  compact = false,
 }: {
   candidate: Candidate;
   onSelect: (candidate: Candidate) => void;
   disabled?: boolean;
   index?: number;
+  // Phone layout: two narrow cards side by side, so shrink the stamp and labels.
+  compact?: boolean;
 }) {
   const style = {
     ...accentStyle(candidate.nomor_urut),
@@ -33,8 +36,8 @@ export function CandidateCard({
       style={style}
       className="fx-card group relative flex h-full min-h-0 w-full animate-drop cursor-pointer text-left disabled:pointer-events-none"
     >
-      <div className="fx-body paper relative flex h-full w-full flex-col p-3 pb-0">
-        <span aria-hidden className="fx-pin pin absolute -top-3 left-1/2 z-20 size-6" />
+      <div className={`fx-body paper relative flex h-full w-full flex-col pb-0 ${compact ? "p-2" : "p-3"}`}>
+        <span aria-hidden className={`fx-pin pin absolute left-1/2 z-20 ${compact ? "-top-2.5 size-5" : "-top-3 size-6"}`} />
 
         <div className="relative min-h-0 flex-1 overflow-hidden bg-[var(--accent)]">
           {candidate.foto_url ? (
@@ -43,7 +46,7 @@ export function CandidateCard({
               alt=""
               fill
               unoptimized
-              sizes="(min-width: 1024px) 25vw, 50vw"
+              sizes={compact ? "50vw" : "(min-width: 1024px) 25vw, 50vw"}
               className="fx-photo object-cover object-top"
               priority
             />
@@ -52,15 +55,17 @@ export function CandidateCard({
 
           <span
             aria-hidden
-            className="fx-stamp rubber-stamp absolute right-3 top-3 grid size-20 place-items-center rounded-full bg-surface/70 text-center leading-none"
+            className={`fx-stamp rubber-stamp absolute grid place-items-center rounded-full bg-surface/70 text-center leading-none ${compact ? "right-1.5 top-1.5 size-14" : "right-3 top-3 size-20"}`}
           >
             <span className="flex flex-col items-center">
-              <span className="text-[10px]">Paslon</span>
-              <span className="font-display text-4xl font-black tracking-normal">{candidate.nomor_urut}</span>
+              <span className={compact ? "text-[8px]" : "text-[10px]"}>Paslon</span>
+              <span className={`font-display font-black tracking-normal ${compact ? "text-2xl" : "text-4xl"}`}>
+                {candidate.nomor_urut}
+              </span>
             </span>
           </span>
 
-          <span aria-hidden className="fx-lens absolute bottom-3 right-3">
+          <span aria-hidden className={`fx-lens absolute bottom-3 right-3 ${compact ? "hidden" : ""}`}>
             <span className="flex items-center gap-2 rounded-full bg-surface-dark/85 py-1 pl-1 pr-3 font-type text-xs uppercase tracking-widest text-on-dark">
               <LensIcon />
               Periksa
@@ -68,14 +73,18 @@ export function CandidateCard({
           </span>
         </div>
 
-        <div className="flex flex-col gap-2 px-1 pb-3 pt-3">
-          <span className="font-hand text-2xl font-bold leading-none text-pink">Paslon No. {candidate.nomor_urut}</span>
-          <NameRow role="Ketua" name={candidate.nama_ketua} />
-          <NameRow role="Wakil" name={candidate.nama_wakil} />
+        <div className={`flex flex-col px-1 ${compact ? "gap-1.5 pb-2 pt-2" : "gap-2 pb-3 pt-3"}`}>
+          <span className={`font-hand font-bold leading-none text-pink ${compact ? "text-xl" : "text-2xl"}`}>
+            Paslon No. {candidate.nomor_urut}
+          </span>
+          <NameRow role="Ketua" name={candidate.nama_ketua} compact={compact} />
+          <NameRow role="Wakil" name={candidate.nama_wakil} compact={compact} />
         </div>
 
-        <span className="fx-cta -mx-3 flex items-center justify-between bg-surface-dark px-4 py-2.5 font-type text-sm uppercase tracking-[0.15em] text-on-dark">
-          Pilih paslon {candidate.nomor_urut}
+        <span
+          className={`fx-cta flex items-center justify-between bg-surface-dark font-type uppercase text-on-dark ${compact ? "-mx-2 px-3 py-2 text-xs tracking-[0.1em]" : "-mx-3 px-4 py-2.5 text-sm tracking-[0.15em]"}`}
+        >
+          {compact ? "Pilih" : `Pilih paslon ${candidate.nomor_urut}`}
           <span aria-hidden className="fx-arrow text-lg">
             →
           </span>
@@ -85,11 +94,11 @@ export function CandidateCard({
   );
 }
 
-function NameRow({ role, name }: { role: string; name: string }) {
+function NameRow({ role, name, compact }: { role: string; name: string; compact?: boolean }) {
   return (
     <span className="flex flex-col border-b border-dashed border-paper-line pb-1">
       <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-soft">{role}</span>
-      <span className="font-type text-lg leading-tight xl:text-xl">{name}</span>
+      <span className={`font-type leading-tight ${compact ? "text-sm" : "text-lg xl:text-xl"}`}>{name}</span>
     </span>
   );
 }

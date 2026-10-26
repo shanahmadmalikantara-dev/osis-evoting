@@ -9,18 +9,16 @@ import { getServiceClient } from "@/lib/supabase/service";
 
 export type LoginState = { error: string | null };
 
-const ROLE_LABEL: Record<AppRole, string> = { admin: "admin", bilik: "bilik" };
-
-// Accepts "bilik1" or a full email address.
+// Accepts "admin" or a full email address.
 function toEmail(username: string): string {
   const value = username.trim().toLowerCase();
   if (value.includes("@")) return value;
-  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-osis.local";
+  const domain = process.env.AUTH_EMAIL_DOMAIN?.trim() || "pemilu-mpk.local";
   return `${value}@${domain}`;
 }
 
 export async function login(_prev: LoginState, formData: FormData): Promise<LoginState> {
-  const expectedRole = formData.get("role") === "admin" ? "admin" : "bilik";
+  const expectedRole: AppRole = "admin";
   const username = String(formData.get("username") ?? "");
   const password = String(formData.get("password") ?? "");
 
@@ -56,13 +54,13 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   if (role !== expectedRole) {
     await supabase.auth.signOut({ scope: "local" });
     await recordLoginFailure(keys);
-    return { error: `Akun ini bukan akun ${ROLE_LABEL[expectedRole]}.` };
+    return { error: "Akun ini bukan akun admin." };
   }
 
   await clearAccountFailures(keys);
   await getServiceClient()
     .from("audit_logs")
-    .insert({ aktor: email, aksi: role === "admin" ? "Login admin" : "Login bilik" });
+    .insert({ aktor: email, aksi: "Login admin" });
   redirect(HOME_FOR_ROLE[role]);
 }
 

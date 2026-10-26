@@ -9,17 +9,17 @@ const ROLES = [
     file: "Berkas A",
     title: "Admin",
     tag: "Panitia & pembina",
-    body: "Pantau suara masuk secara live, buka dan tutup voting, kelola paslon, ekspor hasil.",
+    body: "Pantau suara masuk secara live, buka dan tutup voting, kelola paslon dan daftar pemilih.",
     rot: "-2deg",
     icon: <ChartIcon />,
   },
   {
-    href: "/bilik",
-    cta: "Lanjut sebagai Penyuara",
+    href: "/pilih",
+    cta: "Lanjut sebagai Pemilih",
     file: "Berkas B",
-    title: "Penyuara",
-    tag: "Laptop bilik",
-    body: "Layar bilik suara untuk pemilih. Pilih paslon, konfirmasi, selesai.",
+    title: "Pemilih",
+    tag: "Lewat HP",
+    body: "Pilih kelompok, kelas, dan namamu, lalu pilih paslon. Satu orang satu suara.",
     rot: "1.6deg",
     icon: <BallotIcon />,
   },
@@ -60,7 +60,7 @@ export default function HomePage() {
           <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-surface-dark text-on-dark">
             <LockIcon />
           </span>
-          Pilihanmu rahasia. Aplikasi ini tidak menyimpan nama atau identitas pemilih.
+          Satu orang, satu suara. Pastikan kamu memilih namamu sendiri.
         </p>
       </div>
     </main>
@@ -73,13 +73,13 @@ function Headline() {
     <header className="relative animate-drop">
       <span aria-hidden className="tape absolute -left-8 -top-3 z-10 h-7 w-24 -rotate-[20deg]" />
       <span aria-hidden className="tape absolute -bottom-3 -right-8 z-10 h-7 w-24 -rotate-[20deg]" />
-      <div className="newsprint -rotate-1 px-8 pb-5 pt-3 text-center sm:px-14">
+      <div className="newsprint -rotate-1 px-5 pb-5 pt-3 text-center sm:px-14">
         <div className="flex items-center justify-between gap-8 border-b-2 border-ink pb-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-ink-soft sm:text-[11px]">
           <span>Edisi khusus</span>
           <span>MAN 4 Jakarta</span>
         </div>
-        <p className="mt-2 font-type text-sm uppercase tracking-[0.3em] text-ink-soft">Pemilihan ketua &amp; wakil ketua</p>
-        <h1 className="font-display text-5xl font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl">KADERISASI 2026</h1>
+        <p className="mt-2 font-type text-sm uppercase tracking-[0.3em] text-ink-soft">Pemilihan ketua &amp; wakil ketua MPK</p>
+        <h1 className="font-display text-[2.6rem] font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl">KADERISASI 2026</h1>
         <p className="mx-auto mt-2 max-w-2xl border-t border-ink/40 pt-2 font-hand text-2xl font-bold leading-tight text-pink">
           Integrity for Foundation, Wisdom for Direction: Leading Beyond Expectation
         </p>

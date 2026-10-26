@@ -2,7 +2,7 @@ import { PageHeading } from "@/components/ui/PageHeading";
 import { formatDateTime } from "@/lib/format";
 import { getServerClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "Audit Log · Pemilu OSIS" };
+export const metadata = { title: "Audit Log · Pemilu MPK" };
 
 const LIMIT = 500;
 

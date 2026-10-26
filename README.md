@@ -6,6 +6,7 @@ Prioritasnya: (1) satu klik satu suara tercatat benar, (2) rahasia pilihan, (3) 
 - Aturan proyek: [CLAUDE.md](CLAUDE.md)
 - Panduan deploy (Supabase + Vercel): [docs/DEPLOY.md](docs/DEPLOY.md)
 - Panduan hari-H untuk panitia: [docs/HARI-H.md](docs/HARI-H.md)
+- Website Pemilu **MPK** (pemilih lewat HP, daftar pemilih): folder [mpk-evoting/](mpk-evoting/README.md)
 
 ## Halaman
 

@@ -10,8 +10,8 @@ const label = Courier_Prime({ variable: "--font-label", subsets: ["latin"], weig
 const typewriter = Special_Elite({ variable: "--font-typewriter", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
-  title: "Pemilu OSIS MAN 4 Jakarta",
-  description: "Pemungutan suara Ketua & Wakil Ketua OSIS MAN 4 Jakarta",
+  title: "Pemilu MPK MAN 4 Jakarta",
+  description: "Pemungutan suara Ketua & Wakil Ketua MPK MAN 4 Jakarta",
   robots: { index: false, follow: false },
 };
 

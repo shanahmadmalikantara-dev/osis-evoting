@@ -1,5 +1,5 @@
 // LOCAL ONLY. One command to prepare a fresh Supabase project:
-// 1) apply database migrations, 2) seed dummy candidates if empty, 3) create the 8 accounts.
+// 1) apply database migrations, 2) seed dummy candidates if empty, 3) create the shared admin account.
 //
 // Usage: npm run setup
 import { Client } from "pg";
@@ -21,11 +21,11 @@ async function main() {
     const applied = await applyMigrations(client);
     if (applied.length === 0) console.log("  (sudah terpasang semua)");
 
-    console.log("2/3 Mengisi paslon contoh...");
+    console.log("2/3 Mengisi paslon & daftar pemilih contoh...");
     const { rows } = await client.query("select count(*)::int as n from public.candidates");
     if (rows[0].n === 0) {
       await applySeed(client);
-      console.log("  ✓ 4 paslon dummy ditambahkan (status: draft)");
+      console.log("  ✓ 2 paslon dummy dan daftar pemilih contoh ditambahkan (status: draft)");
     } else {
       console.log(`  (sudah ada ${rows[0].n} paslon, dilewati)`);
     }
@@ -33,7 +33,7 @@ async function main() {
     await client.end();
   }
 
-  console.log("3/3 Membuat akun admin dan bilik...");
+  console.log("3/3 Membuat akun admin...");
   await createUsers();
   console.log("Selesai ✓");
 }

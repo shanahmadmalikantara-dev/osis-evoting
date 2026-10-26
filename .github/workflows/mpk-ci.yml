@@ -1,8 +1,14 @@
-name: CI
+name: CI (Pemilu MPK)
 
 on:
   push:
+    paths: ["mpk-evoting/**", ".github/workflows/mpk-ci.yml"]
   pull_request:
+    paths: ["mpk-evoting/**", ".github/workflows/mpk-ci.yml"]
+
+defaults:
+  run:
+    working-directory: mpk-evoting
 
 jobs:
   check:
@@ -23,6 +29,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: mpk-evoting/package-lock.json
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
@@ -36,6 +43,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: mpk-evoting/package-lock.json
       - uses: supabase/setup-cli@v1
         with:
           version: 2.120.0
@@ -54,7 +62,7 @@ jobs:
       - run: npm run test:e2e
       - name: Security check against the local app
         run: |
-          npx next dev -p 3000 > /tmp/next.log 2>&1 &
-          timeout 120 bash -c 'until curl -s -o /dev/null http://localhost:3000/; do sleep 2; done'
-          psql "$(grep DATABASE_URL .env.local | cut -d= -f2-)" -c "alter table votes disable trigger user; delete from votes; alter table votes enable trigger user; update election set status='draft', test_mode=false, vote_cooldown_seconds=8"
+          npx next dev -p 3100 > /tmp/next.log 2>&1 &
+          timeout 120 bash -c 'until curl -s -o /dev/null http://localhost:3100/; do sleep 2; done'
+          psql "$(grep DATABASE_URL .env.local | cut -d= -f2-)" -c "alter table votes disable trigger user; delete from votes; alter table votes enable trigger user; update election set status='draft', test_mode=false"
           npm run test:security

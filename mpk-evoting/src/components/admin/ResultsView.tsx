@@ -4,12 +4,11 @@ import { percent } from "@/lib/format";
 import type { Results } from "@/lib/types";
 
 // Live numbers on the evidence board: index cards for the summary, a typed report with one bar
-// per candidate (in the candidate's booth color), and one postage stamp per booth.
+// per candidate (in the candidate's color), and turnout per voter group.
 export function ResultsView({ results }: { results: Results }) {
   const max = Math.max(1, ...results.candidates.map((c) => c.votes));
   const leaderVotes = Math.max(0, ...results.candidates.map((c) => c.votes));
   const leaders = results.candidates.filter((c) => c.votes > 0 && c.votes === leaderVotes);
-  const activeBooths = results.booths.filter((b) => b.votes > 0).length;
 
   return (
     <div className="flex flex-col gap-8">
@@ -19,10 +18,10 @@ export function ResultsView({ results }: { results: Results }) {
             {results.total.toLocaleString("id-ID")}
           </span>
         </IndexCard>
-        <IndexCard label="Bilik sudah dipakai" rot="0.8deg" delay={90}>
-          <span className="font-display text-6xl font-black leading-none tabular-nums">
-            {activeBooths}
-            <span className="text-3xl text-ink-soft">/{results.booths.length}</span>
+        <IndexCard label="Sudah memilih" rot="0.8deg" delay={90}>
+          <span data-testid="turnout" className="font-display text-6xl font-black leading-none tabular-nums">
+            {results.total.toLocaleString("id-ID")}
+            <span className="text-3xl text-ink-soft">/{results.voters_total.toLocaleString("id-ID")}</span>
           </span>
         </IndexCard>
         <IndexCard label="Paslon teratas" rot="-0.6deg" delay={180}>
@@ -88,43 +87,32 @@ export function ResultsView({ results }: { results: Results }) {
         </section>
 
         <section
-          aria-labelledby="per-booth"
+          aria-labelledby="per-group"
           style={{ "--tile-rot": "0.4deg" } as CSSProperties}
           className="fx-tile manila relative animate-rise p-5 [animation-delay:280ms] sm:p-7"
         >
           <span aria-hidden className="tape absolute -top-3 left-1/2 h-7 w-28 -translate-x-1/2 rotate-2" />
-          <h2 id="per-booth" className="mb-6 font-display text-3xl font-black">
-            Per bilik
+          <h2 id="per-group" className="mb-6 font-display text-3xl font-black">
+            Per kelompok
           </h2>
-          {results.booths.length === 0 ? (
-            <p className="font-type text-ink-soft">Belum ada akun bilik.</p>
-          ) : (
-            <ul className="grid grid-cols-2 gap-4">
-              {results.booths.map((b, i) => (
-                <li
-                  key={b.bilik_id}
-                  data-testid={`booth-${b.label}`}
-                  style={{ rotate: `${i % 2 ? 1.5 : -1.5}deg` }}
-                  className="group drop-shadow-[1px_3px_3px_rgb(40_25_10/0.45)] will-change-transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
-                >
-                  <div className="stamp-edge bg-surface">
-                    <div className="relative flex flex-col gap-1 border border-ink/30 bg-paper px-2 py-2">
-                      <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-soft">{b.label}</span>
-                      <span className="font-display text-3xl font-black tabular-nums">{b.votes.toLocaleString("id-ID")}</span>
-                      {b.votes > 0 ? (
-                        <span
-                          aria-hidden
-                          className="rubber-stamp absolute bottom-1 right-1 grid size-9 -rotate-12 place-items-center rounded-full text-[8px] leading-none"
-                        >
-                          Aktif
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul className="flex flex-col gap-4">
+            {results.groups.map((g) => (
+              <li key={g.kelompok} data-testid={`group-${g.kelompok}`} className="flex flex-col gap-1">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-type text-sm">{g.label}</span>
+                  <span className="font-mono text-sm tabular-nums">
+                    <strong className="font-display text-xl font-black">{g.voted}</strong>/{g.total}
+                  </span>
+                </div>
+                <div className="h-3 w-full overflow-hidden rounded-sticker bg-paper shadow-[inset_0_1px_3px_rgb(40_25_10/0.3)]">
+                  <div
+                    className="h-full bg-surface-dark transition-[width] duration-500"
+                    style={{ width: `${g.total ? (g.voted / g.total) * 100 : 0}%` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
     </div>

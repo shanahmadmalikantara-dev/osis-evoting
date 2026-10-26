@@ -2,7 +2,7 @@ import { getSessionUser } from "@/lib/auth";
 import { resultsToCsv } from "@/lib/export/csv";
 import { resultsToPdf } from "@/lib/export/pdf";
 import { getServerClient } from "@/lib/supabase/server";
-import type { Results } from "@/lib/types";
+import type { ListedVoter, Results } from "@/lib/types";
 
 export async function GET(_request: Request, ctx: RouteContext<"/admin/export/[format]">) {
   const { format } = await ctx.params;
@@ -20,14 +20,16 @@ export async function GET(_request: Request, ctx: RouteContext<"/admin/export/[f
   const now = new Date();
   const stamp = now.toISOString().slice(0, 16).replace(/[-:]/g, "").replace("T", "-");
   const suffix = results.test_mode ? "-UJI-COBA" : results.status === "closed" ? "-AKHIR" : "-SEMENTARA";
-  const filename = `hasil-pemilu-osis-${stamp}${suffix}.${format}`;
+  const filename = `hasil-pemilu-mpk-${stamp}${suffix}.${format}`;
   const headers = {
     "Content-Disposition": `attachment; filename="${filename}"`,
     "Cache-Control": "no-store",
   };
 
   if (format === "csv") {
-    return new Response(resultsToCsv(results, now), {
+    const { data: voters, error: votersError } = await supabase.rpc("list_voters");
+    if (votersError) return new Response("Gagal memuat daftar pemilih", { status: 500 });
+    return new Response(resultsToCsv(results, voters as ListedVoter[], now), {
       headers: { ...headers, "Content-Type": "text/csv; charset=utf-8" },
     });
   }

@@ -1,118 +1,59 @@
-# Panduan Hari-H Pemilu OSIS
+# Panduan Hari-H Pemilu MPK
 
-Panduan singkat untuk panitia dan pembina. Tidak perlu paham coding.
-Alamat aplikasi di bawah ditulis `ALAMAT` (contoh: `https://pemilu-osis.vercel.app`).
+Untuk panitia dan pengawas. Alamat website ditulis `ALAMAT` (contoh: `https://pemilu-mpk.vercel.app`).
 
 ---
 
-## H-1: Sehari sebelum pemilihan
+## Sebelum hari-H
 
-### 1. Cek Supabase masih aktif
-Proyek Supabase gratis **otomatis dijeda kalau 7 hari tidak dipakai**. Buka supabase.com, masuk ke proyek, dan pastikan statusnya tidak "Paused". Kalau dijeda, klik **Restore** lalu tunggu sampai aktif.
+### 1. Isi daftar pemilih asli
+1. Siapkan Excel dengan 3 kolom: **Nama**, **Kelas**, **Kelompok** (isi kelompok dengan: `Ketua Eskul`, `Perwakilan Kelas`, `OSIS/MPK 2025/2026`, atau `Calon OSIS/MPK 2026/2027`).
+2. Login admin di `ALAMAT/admin/login`, buka menu **Pemilih**.
+3. Klik **Kosongkan daftar** untuk membuang 12 nama contoh.
+4. Blok semua isi Excel (boleh dengan judul kolomnya), **Ctrl + C**, lalu tempel di kotak **Tempel di sini**.
+5. Cek ringkasannya ("... nama siap ditambahkan"). Kalau ada baris merah, perbaiki di Excel lalu tempel ulang.
+6. Klik **Tambahkan ... nama**. Nama yang sama dengan kelas yang sama otomatis dilewati, jadi orang yang masuk 2 kelompok tetap 1 suara.
+
+Nama yang salah ketik bisa dihapus (tombol **Hapus**) lalu ditambah lagi, selama orang itu belum memilih.
 
 ### 2. Cek paslon
-Login admin di `ALAMAT/admin/login`, buka menu **Paslon**, lalu pastikan nama, nomor urut, dan foto sudah benar. Paslon **terkunci** begitu voting dibuka.
+Menu **Paslon**: pastikan nama, nomor urut, dan foto benar. Paslon terkunci begitu voting dibuka.
 
-### 3. Siapkan 8 laptop bilik
-Lakukan di **setiap** laptop:
-
-1. Colokkan charger. Matikan mode tidur: *Settings → System → Power → Sleep: Never*.
-2. Sambungkan ke Wi-Fi sekolah. Simpan juga hotspot HP cadangan.
-3. Buka Google Chrome **biasa** (bukan mode incognito), buka `ALAMAT/bilik/login`.
-4. Login dengan akun bilik laptop itu (`bilik1` untuk laptop 1, `bilik2` untuk laptop 2, dan seterusnya). Tempel kertas "BILIK 1", "BILIK 2", dan seterusnya di laptop.
-5. Tutup Chrome.
-6. Buat shortcut kiosk di desktop: klik kanan desktop → *New → Shortcut*, lalu isi:
-   ```
-   "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk ALAMAT/bilik
-   ```
-   Beri nama **"BILIK SUARA"**.
-7. Buka shortcut itu. Layar penuh harus menampilkan **"BELUM DIBUKA"**.
-   - Kalau malah muncul halaman login, ulangi langkah 3–5.
-   - Untuk keluar dari mode kiosk, tekan **Alt + F4**.
-
-Login bilik bertahan berhari-hari, jadi tidak perlu login ulang besok pagi.
+### 3. Cek Supabase masih aktif
+Proyek gratis otomatis dijeda kalau 7 hari tidak dipakai. Buka supabase.com, pastikan proyek MPK tidak "Paused".
 
 ### 4. Uji coba (wajib)
-1. Di laptop admin, buka **Dashboard** lalu klik **Mulai uji coba**.
-2. Di setiap laptop bilik, layar akan berubah menjadi kartu paslon dengan pita pink **"MODE UJI COBA"**. Pilih satu paslon, lalu klik **Ya, kirim**. Harus muncul **"TERIMA KASIH"**.
-3. Di dashboard, angka **Per bilik** untuk setiap bilik harus bertambah 1.
-4. Klik **Akhiri uji coba**. Semua suara uji dibersihkan dan status kembali **Draft**. Ini satu-satunya cara aman menghapus data uji. Suara sungguhan tidak bisa dihapus selama voting berjalan.
-
-### 5. Pasang aplikasi cadangan (di setiap laptop bilik)
-Aplikasi ini dipakai **hanya kalau internet atau website bermasalah**. Pasang sekarang, karena saat internet mati aplikasi tidak bisa diunduh.
-
-1. Di layar bilik, klik tombol kecil **Aplikasi cadangan** di pojok kiri bawah, lalu **Ya, unduh**. (Bisa juga buka `ALAMAT/unduh/Pemilu-OSIS-Cadangan-Setup.exe`.)
-2. Buka file yang terunduh. Kalau Windows menampilkan *"Windows protected your PC"*, klik **More info** lalu **Run anyway**. Ini muncul karena aplikasinya buatan sendiri, bukan dari toko aplikasi.
-3. Ikuti langkah pemasangan sampai selesai. Muncul ikon **Pemilu OSIS Cadangan** di desktop.
-4. Buka aplikasinya (laptop **masih harus terhubung internet**), lalu:
-   - pilih **nomor bilik** laptop ini,
-   - klik **Ambil data paslon** dan pastikan semua paslon muncul,
-   - buat **PIN petugas** (4–8 angka). Pakai PIN yang sama di semua laptop supaya mudah, dan jangan beri tahu pemilih.
-5. Coba satu kali: klik **Petugas** (pojok kanan bawah) → masukkan PIN → **Buka voting cadangan** → **Kembali ke bilik** → pilih satu paslon.
-6. Bersihkan suara percobaan: **Petugas** → PIN → **Hapus suara di laptop ini** → ketik `HAPUS`. Status kembali **Belum dibuka**.
-7. Tutup aplikasinya: **Petugas** → PIN → **Tutup aplikasi**. Biarkan terpasang sampai hari-H.
-
-> Kalau paslon diubah setelah langkah ini, buka lagi aplikasinya saat masih ada internet: **Petugas** → PIN → **Perbarui data paslon**.
+1. Dashboard → **Mulai uji coba**.
+2. Dari 1–2 HP, buka `ALAMAT/pilih`, pilih kelompok, kelas, nama, lalu paslon. Harus muncul **"TERIMA KASIH"**.
+3. Di dashboard angkanya naik, dan di menu **Pemilih** nama itu tertulis "Memilih paslon ...".
+4. Klik **Akhiri uji coba**. Suara uji hilang, nama kembali "Belum memilih", dan HP tadi bisa dipakai lagi.
 
 ---
 
 ## Hari-H
 
 ### Membuka voting
-1. Pastikan dashboard berstatus **Draft** dengan total **0**.
-2. Klik **Buka voting**, baca peringatannya, lalu klik **Ya, buka voting**.
-3. Kedelapan bilik otomatis menampilkan kartu paslon dalam beberapa detik.
-
-> Setelah dibuka, voting **tidak bisa** dikembalikan ke draft dan suara **tidak bisa** dihapus sampai voting ditutup. Itu disengaja demi keamanan.
+1. Pastikan status **Draft** dan total **0**.
+2. Klik **Buka voting** → **Ya, buka voting**.
+3. Bagikan alamat `ALAMAT/pilih` (misalnya lewat QR code di papan atau grup WA). Halaman di HP yang sudah terbuka akan berubah sendiri dalam ±10 detik.
 
 ### Selama voting
-- Petugas memverifikasi pemilih **di luar aplikasi** (daftar hadir), lalu mempersilakan masuk ke bilik.
-- Pemilih mengetuk kartu paslon, menekan **Ya, kirim**, dan menunggu tulisan **"TERIMA KASIH"**. Setelah 4 detik, layar kembali ke kartu paslon untuk pemilih berikutnya.
-- Kalau pemilih ragu, tombol **Batal** aman ditekan. Dialog juga batal sendiri setelah 60 detik.
-- Pantau dashboard: total dan angka per bilik naik secara live.
-- **Taruh layar dashboard jauh dari bilik dan antrean**, supaya angka yang naik tidak bisa dicocokkan dengan orang yang baru keluar bilik.
+- Pemilih memakai **HP masing-masing**: pilih kelompok → kelas → nama sendiri → paslon → **Ya, kirim**.
+- Setelah memilih, HP itu tetap di layar **"TERIMA KASIH"** dan namanya tercoret untuk semua orang.
+- Pengawas memastikan setiap orang memilih **namanya sendiri**.
+- Pantau menu **Pemilih**: filter "Belum memilih" untuk melihat siapa yang belum.
+
+### Kalau ada salah nama atau nama dobel
+1. Menu **Pemilih**, cari nama itu.
+2. Klik **Batalkan suara** → **Ya, batalkan**. Suaranya hilang dari hitungan dan namanya bisa dipilih lagi. Tercatat di **Audit log**.
+3. Orang yang benar memilih ulang. Kalau dia memakai HP yang tadi, muat ulang halamannya dulu.
 
 ### Menutup voting
-1. Setelah antrean habis, klik **Tutup voting**, lalu **Ya, tutup voting**. Langkah ini **FINAL**.
-2. Semua bilik menampilkan **"SUDAH DITUTUP"**.
-
-### Ekspor hasil
-Di dashboard, bagian **Ekspor hasil**:
-- **CSV (Excel)** untuk diolah.
-- **PDF** untuk dicetak. Ada kolom tanda tangan 3 saksi/pembina.
-
-File yang diekspor setelah voting ditutup diberi nama `...-AKHIR`. Kalau diekspor sebelum ditutup, namanya `...-SEMENTARA`. Setiap ekspor tercatat di **Audit log**.
+1. Klik **Tutup voting** → **Ya, tutup voting**. Langkah ini **FINAL**.
+2. **Ekspor hasil**: **CSV** berisi angka + daftar siapa memilih apa; **PDF** berisi angka saja dengan kolom tanda tangan.
 
 ### Menghapus data setelah selesai (opsional)
-Lakukan **hanya** setelah hasil diumumkan dan file CSV + PDF sudah disimpan dan ditandatangani.
-1. Di dashboard (status **Ditutup**), klik **Hapus semua suara** di kotak bergaris merah paling bawah.
-2. Ketik persis `HAPUS SEMUA SUARA`, lalu klik **Hapus permanen**.
-3. Semua suara hilang permanen dan status kembali **Draft**. Paslon dan akun tidak berubah. Kejadian ini tercatat di **Audit log**.
-
-Tombol ini tidak muncul saat draft, uji coba, atau voting dibuka.
-
----
-
-## Kalau website atau internet mati lama: pakai bilik cadangan
-
-Pakai cara ini kalau hotspot cadangan juga tidak bisa, atau website error terus.
-
-1. Pastikan **tidak ada kotak merah** yang masih menunggu di layar bilik. Kalau ada, ikuti baris "Laptop harus dimatikan saat masih ada kotak merah" di tabel bawah.
-2. Catat **jam** pindah ke cadangan dan **angka terakhir tiap bilik** di dashboard (kalau dashboard masih bisa dibuka).
-3. Tutup Chrome (Alt + F4), lalu buka ikon **Pemilu OSIS Cadangan** di desktop.
-4. Klik **Petugas** (pojok kanan bawah) → PIN → **Buka voting cadangan** → **Kembali ke bilik**. Pemilih memilih seperti biasa, ada bunyi "ting" dan layar "Terima kasih" yang sama.
-5. Suara disimpan **di laptop itu saja**, langsung ke file, jadi tetap aman walau laptop mati mendadak.
-
-Kalau internet sudah normal lagi, petugas boleh kembali ke website. Suara yang sudah masuk di aplikasi cadangan **tetap dihitung**.
-
-### Setelah voting selesai (hanya laptop yang memakai cadangan)
-1. Di aplikasi cadangan: **Petugas** → PIN → **Tutup voting cadangan**.
-2. Klik **Lihat hasil & cetak berita acara** → **Cetak / Simpan PDF**. Untuk file PDF, pilih printer **Microsoft Print to PDF**.
-3. Petugas bilik, 2 saksi, dan pembina menandatangani berita acara itu.
-4. Klik juga **Simpan file rekap (CSV)**. File tersimpan di folder *Documents → Pemilu OSIS Cadangan*.
-5. **Hasil akhir = hasil dari website + angka di berita acara semua bilik cadangan.** Tulis penjumlahannya di berita acara akhir.
-
-Angka cadangan **tidak** dimasukkan ke website, supaya tidak ada cara memasukkan suara lewat file.
+Setelah hasil diumumkan dan file sudah disimpan: dashboard → **Hapus semua suara** → ketik `HAPUS SEMUA SUARA`. Daftar pemilih tetap ada.
 
 ---
 
@@ -120,14 +61,9 @@ Angka cadangan **tidak** dimasukkan ke website, supaya tidak ada cara memasukkan
 
 | Masalah | Yang dilakukan |
 |---|---|
-| Muncul kotak merah "Suara belum terkirim… koneksi bermasalah" | Minta pemilih **tetap di bilik** lalu tekan **Coba lagi**. Tombol ini aman ditekan berkali-kali karena suara tidak akan tercatat dobel. **Jangan muat ulang halaman** selama kotak merah masih ada. |
-| Internet sekolah mati | Sambungkan laptop ke hotspot HP cadangan, lalu tekan **Coba lagi**. Antrean menunggu sampai internet kembali. |
-| "Bilik ini baru saja mengirim suara. Tunggu beberapa detik" | Tunggu 8 detik lalu tekan **Coba lagi**. Ini pengaman anti klik beruntun. |
-| "Sesi laptop bilik habis" | Tekan Alt + F4, buka Chrome biasa, login ulang akun bilik itu, lalu buka lagi shortcut **BILIK SUARA**. |
-| Laptop mati atau hang | Arahkan antrean ke bilik lain. Laptop yang sudah menyala lagi cukup dibuka lewat shortcut **BILIK SUARA**. |
-| Laptop harus dimatikan saat masih ada kotak merah | Sebelum dimatikan, catat angka bilik itu di dashboard. Setelah laptop menyala lagi, kalau angkanya **sudah bertambah 1**, suara pemilih tadi sudah masuk. Kalau **belum**, pemilih boleh memilih ulang. |
-| Layar bilik "GAGAL MEMUAT" | Periksa internet, lalu tekan **Muat ulang**. |
-| Dashboard menulis "Koneksi terputus" | Angka tetap aman di database. Periksa internet laptop admin, nanti angkanya menyusul otomatis. |
-| Aplikasi cadangan: "Terlalu banyak PIN salah" | Tunggu 1 menit lalu coba lagi. |
-| Aplikasi cadangan: lupa PIN | Data suara tetap aman. Hubungi Ahmad: data ada di folder `%APPDATA%\id.sch.man4jakarta.pemiluosis.cadangan` (file `votes.jsonl`). |
-| Lupa password akun | Dari laptop yang punya `.env.local`, jalankan `npm run reset-password -- admin` (atau nama akun bilik, misalnya `bilik3`). Password baru tampil sekali. |
+| "Suara belum terkirim… koneksi bermasalah" | Tekan **Coba lagi**. Aman ditekan berkali-kali, suara tidak akan dobel. Kalau sinyal HP jelek, pindah ke Wi-Fi sekolah. |
+| "Nama ini sudah dipakai untuk memilih" | Ada yang sudah memilih dengan nama itu. Lapor pengawas; admin cek di menu **Pemilih** dan batalkan kalau memang salah. |
+| Nama tidak ada di daftar | Admin tambahkan di menu **Pemilih** (tempel 1 baris), lalu pemilih muat ulang halaman. |
+| HP pemilih tidak bisa dipakai (baterai/kuota habis) | Boleh pinjam HP lain yang **belum** dipakai memilih, atau HP pengawas dengan jendela **Incognito/Private** (tutup jendela itu setelahnya). |
+| Layar "GAGAL MEMUAT" | Cek internet, tekan **Muat ulang**. |
+| Lupa password admin | Dari laptop yang punya `mpk-evoting/.env.local`: `npm run reset-password -- admin`. |

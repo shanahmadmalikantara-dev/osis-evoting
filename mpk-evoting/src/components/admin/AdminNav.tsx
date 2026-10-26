@@ -6,6 +6,7 @@ import { logout } from "@/app/login-action";
 
 const LINKS = [
   { href: "/admin", label: "Dashboard", icon: "★" },
+  { href: "/admin/pemilih", label: "Pemilih", icon: "●" },
   { href: "/admin/paslon", label: "Paslon", icon: "■" },
   { href: "/admin/audit", label: "Audit log", icon: "◆" },
 ];
@@ -18,10 +19,10 @@ export function AdminNav({ email }: { email: string }) {
       <div className="flex flex-wrap items-end gap-1">
         <span className="mb-2 mr-4 hidden items-center gap-2 sm:flex">
           <span className="grid size-9 place-items-center rounded-full bg-surface-dark font-display text-sm font-black text-on-dark shadow-card">
-            OS
+            MP
           </span>
           <span className="font-display text-2xl font-black leading-none text-on-dark [text-shadow:0_2px_4px_rgb(0_0_0/0.5)]">
-            Pemilu OSIS
+            Pemilu MPK
           </span>
         </span>
         {LINKS.map((link) => {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { buttonClasses } from "@/components/ui/Button";
 import { PageShell } from "@/components/ui/PageShell";
 
-export const metadata = { title: "Akses ditolak · Pemilu OSIS" };
+export const metadata = { title: "Akses ditolak · Pemilu MPK" };
 
 export default function AccessDeniedPage() {
   return (

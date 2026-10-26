@@ -9,14 +9,14 @@ export default defineConfig({
   timeout: 60_000,
   globalSetup: "./tests/e2e/global-setup.ts",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3100",
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
       : undefined,
   },
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
+    command: "npx next dev -p 3100",
+    url: "http://localhost:3100",
     reuseExistingServer: true,
     timeout: 120_000,
   },

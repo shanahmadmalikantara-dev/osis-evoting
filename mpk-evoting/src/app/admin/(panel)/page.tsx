@@ -3,7 +3,7 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { getServerClient } from "@/lib/supabase/server";
 import type { Results } from "@/lib/types";
 
-export const metadata = { title: "Dashboard Admin · Pemilu OSIS" };
+export const metadata = { title: "Dashboard Admin · Pemilu MPK" };
 
 export default async function AdminPage() {
   const supabase = await getServerClient();
@@ -12,7 +12,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <PageHeading kicker="Pemilihan ketua & wakil ketua OSIS" title="DASHBOARD" />
+      <PageHeading kicker="Pemilihan ketua & wakil ketua MPK" title="DASHBOARD" />
       <AdminDashboard initialResults={data as Results} />
     </>
   );
