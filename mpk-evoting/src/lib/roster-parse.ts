@@ -1,11 +1,11 @@
-import { parseKelompok, type KelompokKey } from "@/lib/kelompok";
+import { parseKelompok, type RosterKelompokKey } from "@/lib/kelompok";
 
-export type ParsedRow = { nama: string; kelas: string; kelompok: KelompokKey };
+export type ParsedRow = { nama: string; kelas: string; kelompok: RosterKelompokKey };
 export type ParseResult = { rows: ParsedRow[]; problems: string[] };
 
 // Reads a roster pasted from Excel / Google Sheets (tab separated) or typed as CSV.
 // Columns: nama, kelas, kelompok. Without a kelompok column, `fallback` is used.
-export function parseRoster(text: string, fallback: KelompokKey | null): ParseResult {
+export function parseRoster(text: string, fallback: RosterKelompokKey | null): ParseResult {
   const rows: ParsedRow[] = [];
   const problems: string[] = [];
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);

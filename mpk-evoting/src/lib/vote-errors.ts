@@ -5,6 +5,7 @@ export type VoteErrorKind =
   | "invalid_candidate"
   | "already_voted"
   | "voter_not_found"
+  | "invalid_name"
   | "unknown";
 
 export function classifyVoteError(message: string | undefined): VoteErrorKind {
@@ -13,6 +14,7 @@ export function classifyVoteError(message: string | undefined): VoteErrorKind {
   if (text.includes("invalid_candidate")) return "invalid_candidate";
   if (text.includes("already_voted")) return "already_voted";
   if (text.includes("voter_not_found")) return "voter_not_found";
+  if (text.includes("invalid_name")) return "invalid_name";
   if (/fetch|network|failed to|timeout|abort/i.test(text) || text === "") return "network";
   return "unknown";
 }
@@ -23,6 +25,7 @@ export const VOTE_ERROR_TEXT: Record<VoteErrorKind, string> = {
   invalid_candidate: "Paslon tidak ditemukan. Tanya pengawas.",
   already_voted: "Nama ini sudah dipakai untuk memilih. Kalau itu bukan kamu, lapor ke pengawas.",
   voter_not_found: "Nama ini tidak ada di daftar pemilih. Tanya pengawas.",
+  invalid_name: "Nama terlalu pendek. Tulis nama lengkap, minimal 3 huruf.",
   unknown: "Terjadi kesalahan. Tekan \"Coba lagi\" atau tanya pengawas.",
 };
 
@@ -33,5 +36,6 @@ export const RETRYABLE: Record<VoteErrorKind, boolean> = {
   invalid_candidate: false,
   already_voted: false,
   voter_not_found: false,
+  invalid_name: false,
   unknown: true,
 };

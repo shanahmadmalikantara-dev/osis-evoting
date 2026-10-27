@@ -25,6 +25,31 @@ export async function submitVote(voterId: string, candidateId: string, submissio
   });
   if (error) return { ok: false, error: error.message };
 
+  await lockPhone(voterId);
+  return { ok: true };
+}
+
+// Teachers are not on the roster: they type their name and the database adds them on the vote.
+export async function submitGuruVote(nama: string, candidateId: string, submissionId: string): Promise<VoteResult> {
+  const cleaned = typeof nama === "string" ? nama.trim().replace(/\s+/g, " ") : "";
+  if (cleaned.length < 3 || cleaned.length > 120) return { ok: false, error: "invalid_name" };
+  if (![candidateId, submissionId].every((v) => typeof v === "string" && UUID.test(v))) {
+    return { ok: false, error: "invalid_input" };
+  }
+
+  const { data, error } = await getServiceClient().rpc("cast_vote_guru", {
+    p_nama: cleaned,
+    p_candidate_id: candidateId,
+    p_submission_id: submissionId,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  await lockPhone((data as { voter_id: string }).voter_id);
+  return { ok: true };
+}
+
+// One phone, one voter: the phone keeps showing the thank-you screen.
+async function lockPhone(voterId: string) {
   (await cookies()).set(VOTED_COOKIE, voterId, {
     httpOnly: true,
     sameSite: "lax",
@@ -32,5 +57,4 @@ export async function submitVote(voterId: string, candidateId: string, submissio
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
-  return { ok: true };
 }

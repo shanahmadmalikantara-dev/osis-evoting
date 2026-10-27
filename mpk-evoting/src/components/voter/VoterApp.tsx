@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { refreshBallot, submitVote } from "@/app/pilih/actions";
+import { refreshBallot, submitGuruVote, submitVote } from "@/app/pilih/actions";
 import { BoothHeader, ClosedScreen, ConfirmModal, ThanksScreen, type Phase } from "@/components/booth/BoothParts";
 import { CandidateCard } from "@/components/booth/CandidateCard";
 import type { Ballot } from "@/lib/ballot";
@@ -16,9 +16,11 @@ type Step =
   | { kind: "kelompok" }
   | { kind: "kelas"; kelompok: KelompokKey }
   | { kind: "nama"; kelompok: KelompokKey; kelas: string }
+  | { kind: "guru"; nama: string }
   | { kind: "ballot"; voter: RosterVoter };
 
 // Phone voting flow: kelompok -> kelas -> own name -> candidate -> confirm -> thank you (final).
+// Teachers (Guru) skip kelas and type their name instead of picking it.
 export function VoterApp({ initial }: { initial: Ballot }) {
   const [ballot, setBallot] = useState(initial);
   const [step, setStep] = useState<Step>({ kind: "kelompok" });
@@ -53,7 +55,10 @@ export function VoterApp({ initial }: { initial: Ballot }) {
       const candidate = ballot.candidates.find((c) => c.id === candidateId)!;
       setPhase({ kind: "sending", candidate, submissionId });
       try {
-        const result = await submitVote(voter.id, candidateId, submissionId);
+        const result =
+          voter.kelompok === "guru"
+            ? await submitGuruVote(voter.nama, candidateId, submissionId)
+            : await submitVote(voter.id, candidateId, submissionId);
         if (result.ok) {
           playVoteSound();
           setDone(true);
@@ -96,7 +101,11 @@ export function VoterApp({ initial }: { initial: Ballot }) {
 
   const backToNames = (voter: RosterVoter) => {
     setPhase({ kind: "choosing" });
-    setStep({ kind: "nama", kelompok: voter.kelompok as KelompokKey, kelas: voter.kelas });
+    setStep(
+      voter.kelompok === "guru"
+        ? { kind: "guru", nama: voter.nama }
+        : { kind: "nama", kelompok: voter.kelompok as KelompokKey, kelas: voter.kelas },
+    );
     void reload();
   };
 
@@ -144,13 +153,24 @@ export function VoterApp({ initial }: { initial: Ballot }) {
         </>
       ) : (
         <>
-          <StepHeader current={step.kind} />
+          <StepHeader current={step.kind === "guru" ? "nama" : step.kind} />
           {step.kind === "kelompok" ? (
             <KelompokStep
               roster={ballot.roster}
               onPick={(kelompok) => {
+                if (kelompok === "guru") return setStep({ kind: "guru", nama: "" });
                 const kelas = singleKelas(kelompok);
                 setStep(kelas ? { kind: "nama", kelompok, kelas } : { kind: "kelas", kelompok });
+              }}
+            />
+          ) : step.kind === "guru" ? (
+            <GuruStep
+              initialNama={step.nama}
+              onBack={() => setStep({ kind: "kelompok" })}
+              onSubmit={(nama) => {
+                setPhase({ kind: "choosing" });
+                // No roster row yet: the database creates it when the vote is sent.
+                setStep({ kind: "ballot", voter: { id: "", nama, kelas: "Guru", kelompok: "guru", voted: false } });
               }}
             />
           ) : step.kind === "kelas" ? (
@@ -188,7 +208,7 @@ const STEP_LABELS = [
 ] as const;
 
 // Newspaper clipping with the step tracker.
-function StepHeader({ current }: { current: Step["kind"] }) {
+function StepHeader({ current }: { current: (typeof STEP_LABELS)[number]["kind"] }) {
   const index = STEP_LABELS.findIndex((s) => s.kind === current);
   return (
     <header className="relative animate-drop">
@@ -272,7 +292,8 @@ function KelompokStep({ roster, onPick }: { roster: RosterVoter[]; onPick: (k: K
     <StepCard file="Langkah 1 dari 4" title="Kamu perwakilan apa?" hint="Pilih sesuai kamu didaftarkan panitia.">
       <div className="flex flex-col gap-3">
         {KELOMPOK.map((k, i) => {
-          const count = roster.filter((v) => v.kelompok === k.key).length;
+          // Guru is always open: teachers type their name, they are not on the roster.
+          const count = k.key === "guru" ? 1 : roster.filter((v) => v.kelompok === k.key).length;
           return (
             <button
               key={k.key}
@@ -393,6 +414,53 @@ function NamaStep({
       <p className="font-type text-sm text-ink-soft">
         Pilih namamu sendiri. Namamu tidak ada atau sudah tercoret padahal kamu belum memilih? Lapor ke pengawas.
       </p>
+    </StepCard>
+  );
+}
+
+function GuruStep({
+  initialNama,
+  onBack,
+  onSubmit,
+}: {
+  initialNama: string;
+  onBack: () => void;
+  onSubmit: (nama: string) => void;
+}) {
+  const [nama, setNama] = useState(initialNama);
+  const cleaned = nama.trim().replace(/\s+/g, " ");
+  const valid = cleaned.length >= 3;
+  return (
+    <StepCard file="Langkah 3 dari 4" title="Siapa nama Bapak/Ibu?" hint="Guru" onBack={onBack}>
+      <form
+        className="flex flex-col gap-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (valid) onSubmit(cleaned);
+        }}
+      >
+        <label className="flex flex-col gap-1">
+          <span className="font-type text-sm text-ink-soft">Nama lengkap</span>
+          <input
+            type="text"
+            value={nama}
+            onChange={(e) => setNama(e.target.value)}
+            maxLength={120}
+            autoComplete="name"
+            autoCapitalize="words"
+            placeholder="Contoh: Ibu Siti Aminah, S.Pd."
+            className="paper rounded-sticker border-2 border-ink px-4 py-3 font-type text-lg text-ink shadow-sticker outline-none focus:border-pink"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={!valid}
+          className="rounded-sticker border-2 border-ink bg-pink px-4 py-3 font-display text-xl font-black text-white shadow-sticker transition-transform duration-200 active:translate-y-px active:shadow-none disabled:opacity-50"
+        >
+          Lanjut pilih paslon →
+        </button>
+      </form>
+      <p className="font-type text-sm text-ink-soft">Satu nama hanya bisa memilih satu kali. Tulis nama sendiri, bukan nama orang lain.</p>
     </StepCard>
   );
 }

@@ -49,6 +49,14 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       return (await db.query(`select public.${fn}(${params}) as r`, args)).rows[0].r;
     });
 
+  const castGuru = (actor: Actor, nama: string, candidateId: string, submissionId: string = randomUUID()) =>
+    as(db, actor, async () => {
+      const { rows } = await db.query("select public.cast_vote_guru($1, $2, $3) as r", [nama, candidateId, submissionId]);
+      return rows[0].r as { ok: boolean; duplicate: boolean; voter_id: string };
+    });
+  const guruRows = async () =>
+    (await db.query<{ id: string; nama: string }>("select id, nama from public.voters where kelompok = 'guru'")).rows;
+
   const results = () => call(admin, "get_results") as Promise<Results>;
   const listed = () => call(admin, "list_voters") as Promise<ListedVoter[]>;
   const voteCount = async () => Number((await db.query("select count(*) from public.votes")).rows[0].count);
@@ -78,6 +86,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       expect(r.voters_total).toBe(voters.length);
       expect(r.groups.map((g) => g.label)).toEqual([
         "Pimpinan",
+        "Guru",
         "Ketua Eskul",
         "Perwakilan Kelas",
         "OSIS/MPK 2025/2026",
@@ -95,6 +104,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
     it("only the server can cast votes or read the roster", async () => {
       for (const actor of [admin, anon, noRole]) {
         expect(await errorOf(castVote(actor, voters[0].id, candidates[0]))).toMatch("permission denied");
+        expect(await errorOf(castGuru(actor, "Ibu Siti", candidates[0]))).toMatch("permission denied");
         expect(await errorOf(call(actor, "voter_roster"))).toMatch("permission denied");
         expect(await errorOf(call(actor, "voter_has_voted", voters[0].id))).toMatch("permission denied");
       }
@@ -194,6 +204,14 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       expect(await call(admin, "end_test")).toEqual({ deleted_test_votes: 1 });
       expect(await voteCount()).toBe(0);
       expect(await call(server, "voter_has_voted", andi)).toBe(false);
+    });
+
+    it("a teacher's trial vote disappears with the trial, name included", async () => {
+      await call(admin, "start_test");
+      await castGuru(server, "Ibu Uji Coba", candidates[0]);
+      expect(await guruRows()).toHaveLength(1);
+      await call(admin, "end_test");
+      expect(await guruRows()).toHaveLength(0);
     });
   });
 
@@ -302,6 +320,52 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       );
       const recount = new Map(rows.map((row) => [row.candidate_id, Number(row.n)]));
       for (const c of r.candidates) expect(recount.get(c.id) ?? 0).toBe(c.votes);
+    });
+  });
+
+  describe("teachers (Guru) type their own name", () => {
+    it("a typed name votes once, whatever the spacing or capitals", async () => {
+      const first = await castGuru(server, "  Ibu Siti   Aminah, S.Pd. ", candidates[0]);
+      expect(first).toMatchObject({ ok: true, duplicate: false });
+      expect(await errorOf(castGuru(server, "ibu siti aminah, s.pd.", candidates[1]))).toMatch("already_voted");
+      expect(await guruRows()).toEqual([{ id: first.voter_id, nama: "Ibu Siti Aminah, S.Pd." }]);
+      expect(await call(server, "voter_has_voted", first.voter_id)).toBe(true);
+    });
+
+    it("a network retry of the same tap is not a second vote", async () => {
+      const submission = randomUUID();
+      const before = await voteCount();
+      await castGuru(server, "Pak Budi Retry", candidates[1], submission);
+      expect(await castGuru(server, "Pak Budi Retry", candidates[1], submission)).toMatchObject({ duplicate: true });
+      expect(await voteCount()).toBe(before + 1);
+    });
+
+    it("rejects names that are too short and votes for unknown candidates, adding no one", async () => {
+      expect(await errorOf(castGuru(server, " a ", candidates[0]))).toMatch("invalid_name");
+      expect(await errorOf(castGuru(server, "Pak Salah Paslon", randomUUID()))).toMatch("invalid_candidate");
+      expect((await guruRows()).some((g) => g.nama === "Pak Salah Paslon")).toBe(false);
+    });
+
+    it("shows up for the admin like everyone else, but not in the phones' name list", async () => {
+      const siti = (await listed()).find((v) => v.nama === "Ibu Siti Aminah, S.Pd.")!;
+      expect(siti).toMatchObject({ nomor_urut: 1 });
+      const guru = (await results()).groups.find((g) => g.kelompok === "guru")!;
+      expect(guru).toMatchObject({ label: "Guru", total: 2, voted: 2 });
+      const roster = (await call(server, "voter_roster")) as { kelompok: string }[];
+      expect(roster.some((v) => v.kelompok === "guru")).toBe(false);
+    });
+
+    it("cancelling a teacher's vote removes the name so they can vote again", async () => {
+      const siti = (await guruRows()).find((g) => g.nama === "Ibu Siti Aminah, S.Pd.")!;
+      await call(admin, "cancel_vote", siti.id);
+      expect((await guruRows()).some((g) => g.id === siti.id)).toBe(false);
+      expect(await castGuru(server, "Ibu Siti Aminah, S.Pd.", candidates[1])).toMatchObject({ ok: true });
+    });
+
+    it("the roster import does not accept the Guru group", async () => {
+      expect(
+        await errorOf(call(admin, "import_voters", JSON.stringify([{ nama: "Pak Guru", kelas: "Guru", kelompok: "guru" }]))),
+      ).toMatch("invalid_input");
     });
   });
 

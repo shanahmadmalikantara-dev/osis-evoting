@@ -9,7 +9,7 @@ import { Notice } from "@/components/ui/Notice";
 import { accentStyle } from "@/lib/accent";
 import { adminErrorText } from "@/lib/admin-errors";
 import { formatDateTime } from "@/lib/format";
-import { KELOMPOK, kelompokLabel, type KelompokKey } from "@/lib/kelompok";
+import { KELOMPOK, ROSTER_KELOMPOK, kelompokLabel, type KelompokKey, type RosterKelompokKey } from "@/lib/kelompok";
 import { parseRoster } from "@/lib/roster-parse";
 import { authorizeRealtime, getBrowserClient } from "@/lib/supabase/browser";
 import type { ElectionStatus, ListedVoter } from "@/lib/types";
@@ -277,7 +277,7 @@ function ImportSection({
   onImport: (rows: { nama: string; kelas: string; kelompok: string }[]) => Promise<boolean>;
 }) {
   const [text, setText] = useState("");
-  const [fallback, setFallback] = useState<"" | KelompokKey>("");
+  const [fallback, setFallback] = useState<"" | RosterKelompokKey>("");
   const parsed = useMemo(() => parseRoster(text, fallback || null), [text, fallback]);
   const kelasCount = new Set(parsed.rows.map((r) => r.kelas)).size;
 
@@ -296,9 +296,9 @@ function ImportSection({
       </div>
       <label className="flex flex-col gap-1">
         <span className="font-type text-xs uppercase tracking-widest text-ink-soft">Perwakilan untuk baris tanpa kolom perwakilan</span>
-        <select value={fallback} onChange={(e) => setFallback(e.target.value as "" | KelompokKey)} className={FIELD}>
+        <select value={fallback} onChange={(e) => setFallback(e.target.value as "" | RosterKelompokKey)} className={FIELD}>
           <option value="">(ambil dari kolom ke-3)</option>
-          {KELOMPOK.map((k) => (
+          {ROSTER_KELOMPOK.map((k) => (
             <option key={k.key} value={k.key}>
               {k.label}
             </option>

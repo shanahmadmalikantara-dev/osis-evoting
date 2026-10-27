@@ -94,6 +94,33 @@ test.describe("voter page on a phone", () => {
     await expect(page.getByRole("heading", { name: "Kamu perwakilan apa?" })).toBeVisible();
   });
 
+  test("Guru types their own name and votes; the same name cannot vote again", async ({ page, browser }) => {
+    await page.goto("/pilih");
+    await page.getByRole("button", { name: /Guru/ }).click();
+    await expect(page.getByRole("heading", { name: "Siapa nama Bapak/Ibu?" })).toBeVisible();
+    const next = page.getByRole("button", { name: /Lanjut pilih paslon/ });
+    await page.getByRole("textbox", { name: "Nama lengkap" }).fill("Al");
+    await expect(next).toBeDisabled();
+    await page.getByRole("textbox", { name: "Nama lengkap" }).fill("Ibu Siti Aminah, S.Pd.");
+    await next.click();
+    await expect(page.getByText("Ibu Siti Aminah, S.Pd.")).toBeVisible();
+    await vote(page, 2);
+    expect((await countVotes()).byNumber[2]).toBe(1);
+
+    // Another phone typing the same name (different capitals) is refused.
+    const other = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const b = await other.newPage();
+    await b.goto("/pilih");
+    await b.getByRole("button", { name: /Guru/ }).click();
+    await b.getByRole("textbox", { name: "Nama lengkap" }).fill("ibu siti aminah, s.pd.");
+    await b.getByRole("button", { name: /Lanjut pilih paslon/ }).click();
+    await b.getByRole("button", { name: /^Paslon 1:/ }).click();
+    await b.getByRole("button", { name: "Ya, kirim" }).click();
+    await expect(b.getByText(/sudah dipakai untuk memilih/)).toBeVisible();
+    await other.close();
+    expect((await countVotes()).total).toBe(1);
+  });
+
   test("'Bukan saya' goes back to the name list", async ({ page }) => {
     await pickVoter(page, "Perwakilan Kelas", "X-2", "Bunga Lestari");
     await page.getByRole("button", { name: "Bukan saya" }).click();
