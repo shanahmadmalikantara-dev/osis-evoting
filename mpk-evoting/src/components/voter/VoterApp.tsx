@@ -88,6 +88,12 @@ export function VoterApp({ initial }: { initial: Ballot }) {
     );
   }
 
+  // A group with a single class (e.g. Pimpinan) skips the class step.
+  const singleKelas = (kelompok: KelompokKey) => {
+    const list = [...new Set(ballot.roster.filter((v) => v.kelompok === kelompok).map((v) => v.kelas))];
+    return list.length === 1 ? list[0] : null;
+  };
+
   const backToNames = (voter: RosterVoter) => {
     setPhase({ kind: "choosing" });
     setStep({ kind: "nama", kelompok: voter.kelompok as KelompokKey, kelas: voter.kelas });
@@ -140,7 +146,13 @@ export function VoterApp({ initial }: { initial: Ballot }) {
         <>
           <StepHeader current={step.kind} />
           {step.kind === "kelompok" ? (
-            <KelompokStep roster={ballot.roster} onPick={(kelompok) => setStep({ kind: "kelas", kelompok })} />
+            <KelompokStep
+              roster={ballot.roster}
+              onPick={(kelompok) => {
+                const kelas = singleKelas(kelompok);
+                setStep(kelas ? { kind: "nama", kelompok, kelas } : { kind: "kelas", kelompok });
+              }}
+            />
           ) : step.kind === "kelas" ? (
             <KelasStep
               roster={ballot.roster}
@@ -153,7 +165,9 @@ export function VoterApp({ initial }: { initial: Ballot }) {
               roster={ballot.roster}
               kelompok={step.kelompok}
               kelas={step.kelas}
-              onBack={() => setStep({ kind: "kelas", kelompok: step.kelompok })}
+              onBack={() =>
+                setStep(singleKelas(step.kelompok) ? { kind: "kelompok" } : { kind: "kelas", kelompok: step.kelompok })
+              }
               onPick={(voter) => {
                 setPhase({ kind: "choosing" });
                 setStep({ kind: "ballot", voter });
@@ -344,7 +358,7 @@ function NamaStep({
     <StepCard
       file="Langkah 3 dari 4"
       title="Yang mana namamu?"
-      hint={`${kelompokLabel(kelompok)} · ${kelas}`}
+      hint={kelas === kelompokLabel(kelompok) ? kelas : `${kelompokLabel(kelompok)} · ${kelas}`}
       onBack={onBack}
     >
       {names.length === 0 ? (

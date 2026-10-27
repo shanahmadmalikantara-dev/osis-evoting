@@ -78,7 +78,8 @@ const SEED_VOTERS = `
     ('Eka Wulandari', 'XII-1', 'perwakilan_kelas'), ('Farhan Akbar', 'XI-3', 'ketua_eskul'),
     ('Gita Permata', 'X-3', 'ketua_eskul'), ('Hana Safitri', 'XII-2', 'ketua_eskul'),
     ('Irfan Maulana', 'XII-3', 'osis_mpk_lama'), ('Jihan Aulia', 'XI-4', 'osis_mpk_lama'),
-    ('Kevin Ramadhan', 'X-4', 'calon_osis_mpk'), ('Laila Zahra', 'X-1', 'calon_osis_mpk')`;
+    ('Kevin Ramadhan', 'X-4', 'calon_osis_mpk'), ('Laila Zahra', 'X-1', 'calon_osis_mpk'),
+    ('Bapak Budi Santoso, M.Pd.', 'Pimpinan', 'pimpinan')`;
 
 // TEST ONLY: restores the two seed candidates (election must be in draft, votes empty).
 export async function resetCandidates() {

@@ -1,5 +1,6 @@
-// The four groups allowed to vote in the MPK election. Keys match the voters.kelompok check in the DB.
+// The groups allowed to vote in the MPK election. Keys match the voters.kelompok check in the DB.
 export const KELOMPOK = [
+  { key: "pimpinan", label: "Pimpinan", hint: "Pimpinan madrasah" },
   { key: "ketua_eskul", label: "Ketua Eskul", hint: "Ketua ekstrakurikuler" },
   { key: "perwakilan_kelas", label: "Perwakilan Kelas", hint: "Utusan tiap kelas" },
   { key: "osis_mpk_lama", label: "OSIS/MPK 2025/2026", hint: "Pengurus periode sekarang" },
@@ -18,6 +19,7 @@ export function parseKelompok(text: string): KelompokKey | null {
   if (!t) return null;
   const exact = KELOMPOK.find((k) => k.key === t || k.label.toLowerCase() === t);
   if (exact) return exact.key;
+  if (t.includes("pimpinan") || t.includes("guru")) return "pimpinan";
   if (t.includes("calon")) return "calon_osis_mpk";
   if (t.includes("eskul") || t.includes("ekskul") || t.includes("ekstra")) return "ketua_eskul";
   if (t.includes("perwakilan") || t.includes("kelas")) return "perwakilan_kelas";

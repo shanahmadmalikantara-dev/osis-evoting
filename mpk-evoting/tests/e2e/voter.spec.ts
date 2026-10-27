@@ -77,6 +77,23 @@ test.describe("voter page on a phone", () => {
     await expect(b.getByRole("button", { name: /Dafa Hidayat/ })).toBeDisabled();
   });
 
+  test("Pimpinan has no class, so the class step is skipped", async ({ page }) => {
+    await page.goto("/pilih");
+    await page.getByRole("button", { name: /Pimpinan/ }).click();
+    await expect(page.getByRole("heading", { name: "Yang mana namamu?" })).toBeVisible();
+    await page.getByRole("button", { name: /Budi Santoso/ }).click();
+    await vote(page, 1);
+    await page.goto("/pilih");
+    await expect(page.getByRole("heading", { name: "TERIMA KASIH" })).toBeVisible();
+  });
+
+  test("'Pimpinan' back button returns to the group list", async ({ page }) => {
+    await page.goto("/pilih");
+    await page.getByRole("button", { name: /Pimpinan/ }).click();
+    await page.getByRole("button", { name: "Kembali" }).click();
+    await expect(page.getByRole("heading", { name: "Kamu perwakilan apa?" })).toBeVisible();
+  });
+
   test("'Bukan saya' goes back to the name list", async ({ page }) => {
     await pickVoter(page, "Perwakilan Kelas", "X-2", "Bunga Lestari");
     await page.getByRole("button", { name: "Bukan saya" }).click();

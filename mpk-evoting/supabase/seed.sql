@@ -22,5 +22,6 @@ values
   ('Irfan Maulana', 'XII-3', 'osis_mpk_lama'),
   ('Jihan Aulia', 'XI-4', 'osis_mpk_lama'),
   ('Kevin Ramadhan', 'X-4', 'calon_osis_mpk'),
-  ('Laila Zahra', 'X-1', 'calon_osis_mpk')
+  ('Laila Zahra', 'X-1', 'calon_osis_mpk'),
+  ('Bapak Budi Santoso, M.Pd.', 'Pimpinan', 'pimpinan')
 on conflict do nothing;

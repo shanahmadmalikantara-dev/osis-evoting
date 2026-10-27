@@ -58,7 +58,7 @@ test.describe("admin dashboard", () => {
     await phoneVote(browser, "Calon OSIS/MPK", "X-4", "Kevin Ramadhan", 1);
 
     await expect(total(admin)).toHaveText("4", { timeout: 6_000 });
-    await expect(admin.getByTestId("turnout")).toHaveText("4/12");
+    await expect(admin.getByTestId("turnout")).toHaveText("4/13");
     await expect(admin.getByTestId("result-1").getByTestId("votes")).toHaveText("3");
     await expect(admin.getByTestId("result-1").getByTestId("percent")).toHaveText("75,0%");
     await expect(admin.getByTestId("result-2").getByTestId("percent")).toHaveText("25,0%");
@@ -99,18 +99,18 @@ test.describe("voter list (Pemilih)", () => {
     await expect(admin.getByText("2 nama siap ditambahkan")).toBeVisible();
     await admin.getByRole("button", { name: "Tambahkan 2 nama" }).click();
     await expect(admin.getByText(/1 nama ditambahkan\. 1 dilewati karena sudah ada: andi saputra \(X-1\)/)).toBeVisible();
-    await expect(admin.getByTestId("voter-row")).toHaveCount(13);
+    await expect(admin.getByTestId("voter-row")).toHaveCount(14);
 
     // A row with an unknown group blocks the whole paste.
-    await admin.getByRole("textbox", { name: "Tempel di sini" }).fill("Siti\tX-2\tguru");
-    await expect(admin.getByText(/perwakilan "guru" tidak dikenal/)).toBeVisible();
+    await admin.getByRole("textbox", { name: "Tempel di sini" }).fill("Siti\tX-2\tsatpam");
+    await expect(admin.getByText(/perwakilan "satpam" tidak dikenal/)).toBeVisible();
     await expect(admin.getByRole("button", { name: /Tambahkan/ })).toBeDisabled();
 
     const zaki = admin.getByTestId("voter-row").filter({ hasText: "Zaki Firmansyah" });
     await zaki.getByRole("button", { name: "Hapus" }).click();
     await admin.getByRole("dialog").getByRole("button", { name: "Ya, hapus" }).click();
     await expect(admin.getByText("Nama dihapus dari daftar.")).toBeVisible();
-    await expect(admin.getByTestId("voter-row")).toHaveCount(12);
+    await expect(admin.getByTestId("voter-row")).toHaveCount(13);
 
     // The new names show up for voters.
     await resetElection({ status: "open" });

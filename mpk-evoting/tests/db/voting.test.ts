@@ -77,6 +77,7 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       expect(r.total).toBe(0);
       expect(r.voters_total).toBe(voters.length);
       expect(r.groups.map((g) => g.label)).toEqual([
+        "Pimpinan",
         "Ketua Eskul",
         "Perwakilan Kelas",
         "OSIS/MPK 2025/2026",
@@ -162,6 +163,16 @@ describe.skipIf(!TEST_DATABASE_URL)("database: MPK voting rules", () => {
       );
       expect(err).toMatch("invalid_input");
       expect((await voterList(db)).length).toBe(before);
+    });
+
+    it("accepts the Pimpinan group", async () => {
+      const r = (await call(
+        admin,
+        "import_voters",
+        JSON.stringify([{ nama: "Ibu Contoh, M.Pd.", kelas: "Pimpinan", kelompok: "pimpinan" }]),
+      )) as { inserted: number };
+      expect(r.inserted).toBe(1);
+      await call(admin, "delete_voter", (await voterList(db)).find((v) => v.nama === "Ibu Contoh, M.Pd.")!.id);
     });
 
     it("deletes a roster entry without a vote", async () => {
